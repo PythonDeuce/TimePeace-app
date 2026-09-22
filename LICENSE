@@ -1,0 +1,41 @@
+TimePeace License (use only)
+
+Copyright (c) 2026 EABA. All rights reserved.
+
+This license covers TimePeace version 1.1.0 and later, including its source
+files, assets, documentation, and the official builds published by EABA.
+
+Permitted
+1. You may download, install, and run the official builds of TimePeace on
+   devices you own or control, for personal and internal use.
+2. You may keep copies of the official builds for your own backup.
+
+Not permitted
+3. You may not modify, translate, adapt, or create derivative works of
+   TimePeace or any part of it.
+4. You may not decompile, disassemble, reverse engineer, or otherwise attempt
+   to derive the source of any build, except where the law expressly allows it
+   despite this term.
+5. You may not redistribute, publish, sublicense, rent, lease, lend, sell, or
+   host TimePeace or any part of it, in original or altered form.
+6. You may not remove or alter any notice, license text, or attribution.
+
+Third party material
+7. City data comes from GeoNames (CC BY 4.0). Bundled fonts keep their own
+   licenses (SIL Open Font License 1.1 and Apache License 2.0); see
+   fonts/README.txt. Those licenses continue to apply to that material.
+
+No warranty
+8. TimePeace is provided "as is", without warranty of any kind, express or
+   implied, including merchantability, fitness for a particular purpose, and
+   non infringement. In no event shall EABA be liable for any claim, damages,
+   or other liability arising from the software or its use.
+
+Termination
+9. This license ends automatically if you breach any of its terms. On
+   termination you must stop using TimePeace and delete your copies.
+
+Earlier versions
+10. Versions 1.0.0 through 1.0.6 were published under the MIT License. That
+    grant is irrevocable for those versions and is not affected by this
+    license.
