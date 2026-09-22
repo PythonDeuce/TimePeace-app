@@ -24,7 +24,9 @@ Some antivirus programs flag new unsigned apps that few people have downloaded y
 
 With a different antivirus (McAfee, Norton, Avast, and others), open that program, look for Quarantine or History, find TimePeace, choose Restore or Allow, then do steps 6 and 7.
 
-## macOS says the app is damaged or from an unidentified developer
+## macOS says the app is damaged, will not open, or is from an unidentified developer
+
+There are two Mac downloads. Apple menu, About This Mac: "Apple M1" or later means the Apple silicon build (`TimePeace-macos-arm64.zip`), "Intel" means the Intel build (`TimePeace-macos-intel.zip`). The wrong one does not launch at all.
 
 The build is not notarized. Right click the app, choose Open, then Open again in the dialog. If macOS still refuses, run once in Terminal:
 

@@ -7,7 +7,8 @@ Download page: https://pythondeuce.github.io/TimePeace-app/
 Direct downloads (always the latest release):
 
 - Windows: https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-windows.exe
-- macOS: https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-macos.zip
+- macOS, Apple silicon (M1 and later): https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-macos-arm64.zip
+- macOS, Intel: https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-macos-intel.zip
 - Linux: https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-linux
 
 This repository holds the download page and the release builds. The source is developed privately by EABA.
