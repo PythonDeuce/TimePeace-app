@@ -10,6 +10,20 @@ Where the files live (called "the settings folder" below):
 
 The build is not code signed, so SmartScreen warns the first time. Choose "More info", then "Run anyway". The warning does not come back for that file.
 
+## The download says "Virus detected" (Windows)
+
+Some antivirus programs flag new unsigned apps that few people have downloaded yet. It is a false alarm, but you have to let the file through yourself:
+
+1. Click Start, type Windows Security, and open it.
+2. Click "Virus & threat protection".
+3. Click "Protection history".
+4. Find the entry for TimePeace-windows.exe (it says Threat quarantined or blocked).
+5. Click it, then "Actions", then "Allow" (or Restore).
+6. Download the Windows file from the download page again. This time it stays.
+7. Open it. If Windows shows "Windows protected your PC", click "More info", then "Run anyway".
+
+With a different antivirus (McAfee, Norton, Avast, and others), open that program, look for Quarantine or History, find TimePeace, choose Restore or Allow, then do steps 6 and 7.
+
 ## macOS says the app is damaged or from an unidentified developer
 
 The build is not notarized. Right click the app, choose Open, then Open again in the dialog. If macOS still refuses, run once in Terminal:
