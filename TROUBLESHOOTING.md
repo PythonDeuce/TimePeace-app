@@ -58,7 +58,7 @@ Right click the tray icon and choose "Bring to screen". It centers the clock on 
 
 ## My settings are gone
 
-Settings are kept twice: in the app's browser storage and in `store.json` in the settings folder. If the browser storage was reset, the file restores it on the next start. If `store.json` is missing too, the settings are gone; a backup of the folder is the only way back.
+Settings and notes are kept twice: in the app's browser storage and in `store.json` in the settings folder. The file is the copy that counts. Every start reads it before the page draws and repairs the browser copy from it, and every change is written to it within a second. If the file was damaged, the settings folder has a `backups` folder with a dated copy of `store.json` from each start that changed it, the newest ten. Quit TimePeace, copy the newest good one over `store.json`, and start again.
 
 Settings depend on the local port 47321. If another program holds that port, TimePeace uses the next one and shows a toast saying so; settings are restored from `store.json` in that case.
 
