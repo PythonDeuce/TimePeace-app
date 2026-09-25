@@ -32,3 +32,5 @@ Every sticky note has a microphone: press it, speak, and the words land at the c
 Your cities, looks and notes live in TimePeace's settings folder, never in the program files, so updates leave them alone; a copy is taken right before every update, and Settings, About shows where the folder is.
 
 Already have an older TimePeace that never offered the update? Download the new file and run it: it finds your old copy, asks once, replaces it in place and keeps your cities, looks and notes.
+
+Hold the microphone in a note and talk; release, and the words are there. Hotkeys work from any window: Ctrl+Alt+N for a new note, hold Ctrl+Alt+M to talk into the note you touched last, Ctrl+Alt+F for in front or behind, Ctrl+Alt+1 to 9 to jump to an open note (Ctrl+Option on the Mac); change them in Settings, Hotkeys, and the keys button on every note lists them.
