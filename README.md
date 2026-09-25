@@ -30,3 +30,5 @@ TimePeace is also an MCP server, so Claude Desktop or another MCP client can rea
 Every sticky note has a microphone: press it, speak, and the words land at the cursor. Dictation runs on your computer with whisper.cpp (Windows, Apple Silicon Macs, Linux); the 60 MB speech model is fetched once, when you first press a microphone or from Settings, Dictation, where you can also switch from English to Any language. Each note also has its own In front / Behind button, so a note can sit under your other windows instead of over them.
 
 Your cities, looks and notes live in TimePeace's settings folder, never in the program files, so updates leave them alone; a copy is taken right before every update, and Settings, About shows where the folder is.
+
+Already have an older TimePeace that never offered the update? Download the new file and run it: it finds your old copy, asks once, replaces it in place and keeps your cities, looks and notes.
