@@ -78,7 +78,8 @@ Quit TimePeace, then delete the settings folder. The next start is a fresh insta
 
 With Updates set to Automatic (Settings, About TimePeace), the app downloads a new release when the daily check finds one, verifies it against the checksum published with the release, and installs it the next time TimePeace starts. Settings, About shows "downloaded" with a Restart now link while it waits; the tray item reads "Restart to update".
 
-- The downloaded file waits in the `updates` folder beside your settings (`%APPDATA%\TimePeace\updates` on Windows). Delete it to cancel a pending update.
+- The downloaded file waits in the `updates` folder beside your settings (`%APPDATA%\TimePeace\updates` on Windows, `~/Library/Application Support/TimePeace/updates` on Mac, `~/.config/TimePeace/updates` on Linux). Delete it to cancel a pending update.
+- On Mac the new `TimePeace.app` replaces the old bundle where it sits (the Applications folder, or wherever you put it); on Linux the binary is replaced in place.
 - The previous build stays beside the app as `.old` until the next start. If a swap fails, the updater puts the old build back and starts it.
 - An update only installs on its own when the release carries a `SHA256SUMS.txt` and the download matches it; otherwise the app only offers the download page.
 - Set Updates to Manual to be told only. When running from source, updates are never applied on their own.

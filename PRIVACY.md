@@ -23,7 +23,7 @@ Once a day, and when you press "Check for updates" in Settings, About TimePeace,
 
 The request carries the app version in its User-Agent header and nothing else. GitHub sees your IP address, as any web request does. The answer tells the app whether a newer version exists.
 
-When a newer version exists and Updates is set to Automatic in Settings, About TimePeace (the default), the app downloads that release's file for your system from GitHub, checks it against the checksum published with the release, keeps it in the `updates` folder beside your settings, and installs it the next time TimePeace starts (or when you choose Restart now). The old build is kept beside the app as `.old` until the next start, in case the swap has to be undone. Set Updates to Manual and the app only tells you; you open the download page yourself.
+When a newer version exists and Updates is set to Automatic in Settings, About TimePeace (the default), the app downloads that release's file for your system from GitHub, checks it against the checksum published with the release, keeps it in the `updates` folder beside your settings, and installs it the next time TimePeace starts (or when you choose Restart now), on Windows, Mac and Linux alike. The old build is kept beside the app as `.old` until the next start, in case the swap has to be undone. Set Updates to Manual and the app only tells you; you open the download page yourself.
 
 There is no telemetry, no analytics, no crash reporting, and no account.
 
