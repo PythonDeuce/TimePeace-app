@@ -15,6 +15,10 @@ Folder locations:
 - macOS: `~/Library/Application Support/TimePeace`
 - Linux: `~/.config/TimePeace`
 
+## The MCP connector
+
+When an assistant is configured to use TimePeace as an MCP server, it starts `TimePeace --mcp` itself and that process talks to the running clock over the loopback address only, authorized by a token the clock writes to `control.json` in its settings folder for the length of a run. The assistant sees what the tools return (your cities, the time there, note titles and text when it asks for them) and nothing else. Nothing is sent anywhere by TimePeace; what the assistant does with an answer is governed by that assistant.
+
 ## The one network request
 
 Once a day, and when you press "Check for updates" in Settings, About TimePeace, the app asks GitHub for the latest release of TimePeace:
