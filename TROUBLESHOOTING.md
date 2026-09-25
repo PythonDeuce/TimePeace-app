@@ -73,3 +73,12 @@ Versions 1.0.0 to 1.0.6 shipped without the note window files, so notes could no
 ## Starting over
 
 Quit TimePeace, then delete the settings folder. The next start is a fresh install. Delete only `state.json` to reset window positions and keep everything else.
+
+## Updates
+
+With Updates set to Automatic (Settings, About TimePeace), the app downloads a new release when the daily check finds one, verifies it against the checksum published with the release, and installs it the next time TimePeace starts. Settings, About shows "downloaded" with a Restart now link while it waits; the tray item reads "Restart to update".
+
+- The downloaded file waits in the `updates` folder beside your settings (`%APPDATA%\TimePeace\updates` on Windows). Delete it to cancel a pending update.
+- The previous build stays beside the app as `.old` until the next start. If a swap fails, the updater puts the old build back and starts it.
+- An update only installs on its own when the release carries a `SHA256SUMS.txt` and the download matches it; otherwise the app only offers the download page.
+- Set Updates to Manual to be told only. When running from source, updates are never applied on their own.

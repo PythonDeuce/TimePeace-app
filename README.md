@@ -14,5 +14,5 @@ Direct downloads (always the latest release):
 This repository holds the download page and the release builds. The source is developed privately by EABA.
 
 - The builds are not code signed; see [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for the SmartScreen and Gatekeeper steps and everything else.
-- The app makes one network request, the daily update check; see [PRIVACY.md](PRIVACY.md).
+- The app's only network use is the daily update check and, with Updates set to Automatic, the download of a new release; see [PRIVACY.md](PRIVACY.md).
 - TimePeace 1.1.0 and later are licensed for personal and internal use only; see [LICENSE](LICENSE). Versions 1.0.0 through 1.0.6 were released under the MIT License.
