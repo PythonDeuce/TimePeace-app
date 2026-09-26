@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TimePeace</title>
+<meta name="description" content="TimePeace: a world clock, military time trainer, meeting finder, and sticky notes that live on your desktop. An EABA product.">
+<style>
+  @font-face { font-family: 'Shrikhand'; font-weight: 400; font-display: swap; src: url('fonts/Shrikhand-400.woff2') format('woff2'); }
+  @font-face { font-family: 'Nunito'; font-weight: 200 1000; font-display: swap; src: url('fonts/Nunito-variable.woff2') format('woff2'); }
+  :root {
+    --bg: #f4e9d3; --card: #fbf4e4; --line: #d9c9a8; --text: #3b2a20; --soft: #5f6c2b; --accent: #d9622b; --gold: #e8b23a; --olive: #7c8b3a; --node: #fffaf0;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 'Nunito', 'Segoe UI', system-ui, sans-serif; }
+  body::before { content: ''; position: fixed; inset: 0; z-index: -1; background:
+    radial-gradient(circle at 12% 8%, rgba(232, 178, 58, 0.35), transparent 38%),
+    radial-gradient(circle at 88% 20%, rgba(217, 98, 43, 0.22), transparent 40%),
+    radial-gradient(circle at 70% 95%, rgba(124, 139, 58, 0.25), transparent 45%); }
+  main { max-width: 1000px; margin: 0 auto; padding: 28px 20px 60px; }
+  .wordmark { font-family: 'Shrikhand', Georgia, serif; font-weight: 400; color: var(--accent); letter-spacing: 0.01em; margin: 0; line-height: 1.05; }
+  .wordmark .peace { color: var(--gold); }
+  h1.wordmark { font-size: 58px; }
+  h2 { font-family: 'Shrikhand', Georgia, serif; font-weight: 400; font-size: 30px; color: var(--accent); margin: 48px 0 12px; }
+  h3 { font-size: 19px; margin: 22px 0 8px; color: var(--text); }
+  h4 { font-size: 15px; margin: 14px 0 4px; color: var(--soft); text-transform: uppercase; letter-spacing: 0.06em; }
+  p { margin: 8px 0; }
+  a { color: var(--accent); }
+  .mark { vertical-align: -6px; margin-right: 6px; }
+  header { display: grid; grid-template-columns: 1fr; gap: 20px; align-items: center; }
+  @media (min-width: 760px) { header { grid-template-columns: 1.15fr 1fr; } }
+  .lead { font-size: 19px; color: var(--text); }
+  .meta { color: var(--soft); font-size: 14.5px; font-weight: 600; }
+  .shot { width: 100%; max-width: 440px; margin: 0 auto; display: block; filter: drop-shadow(0 18px 34px rgba(59, 42, 32, 0.28)); }
+  nav.toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 0; }
+  nav.toc a { text-decoration: none; background: var(--card); border: 1px solid var(--line); color: var(--text); border-radius: 999px; padding: 6px 14px; font-size: 14px; font-weight: 700; }
+  nav.toc a:hover { border-color: var(--accent); color: var(--accent); }
+  .downloads { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin: 16px 0 6px; }
+  .btn { display: block; padding: 14px 16px; border-radius: 16px; background: var(--accent); border: 2px solid var(--accent); color: #fff7e8; text-decoration: none; box-shadow: 0 6px 0 #a8461a; transition: transform 0.08s; }
+  .btn:active { transform: translateY(3px); box-shadow: 0 3px 0 #a8461a; }
+  .btn strong { display: block; font-size: 18px; }
+  .btn span { font-size: 13.5px; opacity: 0.9; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; box-shadow: 0 2px 0 rgba(59, 42, 32, 0.06); }
+  .card + .card { margin-top: 14px; }
+  ul, ol { padding-left: 20px; margin: 6px 0; }
+  li { margin: 4px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+  td, th { text-align: left; vertical-align: top; padding: 10px 8px; border-top: 1px solid var(--line); }
+  th { color: var(--soft); font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; border-top: 0; }
+  td.ic { width: 64px; white-space: nowrap; }
+  td.nm { width: 150px; font-weight: 800; }
+  .node { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--node); border: 2px solid var(--text); color: var(--text); box-shadow: 0 2px 4px rgba(59, 42, 32, 0.25); }
+  .node.hot { background: var(--accent); border-color: var(--accent); color: #fff7e8; }
+  .node.small { width: 32px; height: 32px; }
+  .node.pin { background: #d7263d; border-color: #9c1526; box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.3); }
+  .arc { display: inline-block; width: 40px; height: 40px; }
+  .letter { font-family: Georgia, serif; font-size: 18px; font-weight: 700; }
+  kbd { font: 13px/1 'Nunito', system-ui, sans-serif; font-weight: 800; background: #fff; border: 1px solid var(--line); border-bottom-width: 3px; border-radius: 6px; padding: 3px 7px; color: var(--text); }
+  .keys { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px 18px; }
+  .tip { background: rgba(232, 178, 58, 0.22); border-left: 4px solid var(--gold); padding: 10px 14px; border-radius: 0 12px 12px 0; margin: 12px 0; }
+  .two { display: grid; gap: 14px; grid-template-columns: 1fr; }
+  @media (min-width: 760px) { .two { grid-template-columns: 1fr 1fr; } }
+  .notes h4:first-child { margin-top: 0; }
+  code { background: rgba(59, 42, 32, 0.08); padding: 1px 6px; border-radius: 6px; font-size: 14px; }
+  details.fold { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 0 18px; margin: 8px 0; }
+  details.fold > summary { cursor: pointer; list-style: none; padding: 14px 0; font-size: 17px; font-weight: 800; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  details.fold > summary::-webkit-details-marker { display: none; }
+  details.fold > summary::before { content: ""; width: 9px; height: 9px; border-right: 2px solid var(--accent); border-bottom: 2px solid var(--accent); transform: rotate(-45deg); transition: transform 0.15s; flex: 0 0 auto; }
+  details.fold[open] > summary::before { transform: rotate(45deg); }
+  details.fold > summary small { font-weight: 600; color: var(--soft); font-size: 14px; }
+  details.fold > .body { padding: 0 0 16px; }
+  .strip { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14.5px; color: var(--soft); font-weight: 600; margin: 10px 0 0; }
+  .strip a { color: var(--accent); }
+  .quick { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin: 14px 0 4px; }
+  .quick div { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; font-size: 14.5px; }
+  .quick strong { display: block; font-size: 15px; margin-bottom: 2px; }
+  footer { margin-top: 44px; color: var(--soft); font-size: 14px; border-top: 2px solid var(--line); padding-top: 18px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1 class="wordmark"><svg class="mark" width="46" height="46" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="40" fill="none" stroke="#d9622b" stroke-width="8"/><path d="M50 50V14M50 50L75.5 75.5M50 50L24.5 75.5" fill="none" stroke="#3b2a20" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="50" r="6" fill="#e8b23a"/></svg>Time<span class="peace">Peace</span></h1>
+      <p class="lead">A world clock that lives on your desktop, with a military time trainer, a meeting finder, and sticky notes that pin anywhere.</p>
+      <p class="meta">Version 1.7.1, released 2026-09-25. Windows, macOS, Linux. An EABA product.</p>
+      <p class="hint">Already have TimePeace? Download and run the new file: it offers to replace your old one and keeps your cities, looks and notes.</p>
+      <div class="downloads" style="margin-top:14px">
+        <a class="btn" href="https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-windows.exe"><strong>Windows</strong><span>one file, no installer</span></a>
+        <a class="btn" href="https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-macos-arm64.zip"><strong>Mac, Apple silicon</strong><span>M1 and later</span></a>
+        <a class="btn" href="https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-macos-intel.zip"><strong>Mac, Intel</strong><span>older Intel Macs</span></a>
+        <a class="btn" href="https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-linux"><strong>Linux</strong><span>mark executable, run</span></a>
+      </div>
+      <p class="strip"><span>Not signed yet: Windows asks once ("More info", "Run anyway"), Mac wants right click, Open.</span><a href="#blocked">Download blocked?</a><a href="https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-windows-folder.zip">Windows folder version</a><a href="https://github.com/PythonDeuce/TimePeace-app/releases">All releases</a></p>
+    </div>
+    <img class="shot" src="hero.png" alt="The TimePeace disc in the Woodstock theme showing New York, London, Tokyo, and Sydney, with the tool buttons on its rim" width="608" height="608">
+  </header>
+
+  <div class="quick">
+    <div><strong>Clocks</strong>Any cities, 12 or 24 hour, eighteen designs inside the disc, fifteen themes.</div>
+    <div><strong>Lock</strong>Fades the disc to the level you choose and lets clicks pass through to what is behind.</div>
+    <div><strong>Train, Chart, Plan</strong>A military time quiz, the conversion table, and a meeting finder across cities.</div>
+    <div><strong>Sticky notes</strong>Rich text, checklists, a pen, and a red pin that fixes a note in place.</div>
+  </div>
+
+  <details class="fold" id="blocked">
+    <summary>Download blocked or a virus warning on Windows <small>a false alarm, here is how to let it through</small></summary>
+    <div class="body">
+      <p>Some antivirus programs flag new unsigned apps that few people have downloaded yet. The quickest way around it is the <a href="https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-windows-folder.zip">Windows folder version</a>: unzip it anywhere and run TimePeace.exe inside; scanners rarely object to it. Or let the single file through yourself:</p>
+      <ol>
+        <li>Click Start, type <strong>Windows Security</strong>, open it, then <strong>Virus &amp; threat protection</strong>, then <strong>Protection history</strong>.</li>
+        <li>Find <strong>TimePeace-windows.exe</strong>, click it, then <strong>Actions</strong>, then <strong>Allow</strong> (or Restore).</li>
+        <li>Download the Windows file from this page again, open it, and choose <strong>More info</strong>, then <strong>Run anyway</strong>.</li>
+      </ol>
+      <p>With McAfee, Norton, Avast, or another product: open it, find Quarantine or History, restore or allow TimePeace, then do step 3. Linux needs WebKitGTK (<code>gir1.2-webkit2-4.1</code>) and a compositing window manager. Not sure which Mac you have? Apple menu, About This Mac.</p>
+    </div>
+  </details>
+
+  <h2 id="guide">How to use</h2>
+  <p class="meta">Drag the disc from anywhere on its face. Everything else is a button on the rim. Open a section for the details.</p>
+
+  <details class="fold" open>
+    <summary>Buttons on the rim <small>lock, notes, chart, settings, plan, train, in front or behind, quit</small></summary>
+    <div class="body">
+    <table>
+      <tr><th>Icon</th><th>Name</th><th>What it does</th></tr>
+      <tr><td class="ic"><span class="node hot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg></span></td><td class="nm">Lock <kbd>L</kbd></td><td>The orange button at 3 o'clock. Locks the disc in place: the tool buttons hide, the disc fades to the level you chose, and clicks pass straight through it to whatever is behind. The lock, the Notes and In front buttons, and both meters stay faintly visible and keep working; press the lock again to unlock. Locking also closes any open window.</td></tr>
+      <tr><td class="ic"><span class="node"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v10l-6 6H4z"/><path d="M14 20v-6h6"/><path d="M8 9h8M8 13h5"/></svg></span></td><td class="nm">Notes <kbd>N</kbd></td><td>Opens a new sticky note in its own window. It stays reachable while the disc is locked. See <a href="#notes">Sticky notes</a>.</td></tr>
+      <tr><td class="ic"><span class="node"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg></span></td><td class="nm">Chart <kbd>C</kbd></td><td>The military time chart, every hour from 12 AM to 11 PM beside its 24 hour form, with the rule of thumb: before 1 PM the numbers match, from 1 PM on add 12, midnight is 0000 and noon is 1200.</td></tr>
+      <tr><td class="ic"><span class="node"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span></td><td class="nm">Settings <kbd>S</kbd></td><td>Opens Settings in a compact window beside the disc. Every change shows on the clock as you make it. A small red dot pulses on this button when a newer TimePeace is out; Settings, About has the download link. See <a href="#settings">Settings</a>.</td></tr>
+      <tr><td class="ic"><span class="node"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15.5" r="1.5" fill="currentColor" stroke="none"/></svg></span></td><td class="nm">Plan <kbd>P</kbd></td><td>The meeting finder. Pick a date, and every city lines up on one 24 hour strip with working hours shaded. Tap a column to pick a time and see what o'clock it is in each city, then copy a one line summary.</td></tr>
+      <tr><td class="ic"><span class="node"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/><path d="M22 10v6"/></svg></span></td><td class="nm">Train <kbd>T</kbd></td><td>A military time quiz. Choose Regular to Military, Military to Regular, or Mixed, answer in any reasonable form (1530, 15:30, 3:30 pm), and watch your streak, session score, and lifetime stats. Results copy with one press.</td></tr>
+      <tr><td class="ic"><span class="node"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span></td><td class="nm">Quit</td><td>At 12 o'clock. Saves the window position and exits cleanly. Open notes come back next time.</td></tr>
+      <tr><td class="ic"><span class="node"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="14" height="12" rx="2"/><path d="M3 9v10a2 2 0 0 0 2 2h10"/></svg></span></td><td class="nm">In front or behind</td><td>At 5 o'clock. In front keeps the clock above every window. Press it and the clock goes behind them, on the desktop, still ticking. While it is behind, this one button keeps floating above your windows at the same spot, faint until you hover, so one click brings the clock back even with a window covering it. Also in the tray menu.</td></tr>
+    </table>
+      <p class="meta">Settings, Plan, Chart, and Train open in their own small window beside the disc, one at a time. <kbd>Esc</kbd> or the X closes it.</p>
+    </div>
+  </details>
+
+  <details class="fold">
+    <summary>The two meters and the keyboard <small>fade, size, and the shortcut keys</small></summary>
+    <div class="body">
+    <table>
+      <tr><th>Meter</th><th>Where</th><th>What it does</th></tr>
+      <tr><td class="ic"><svg class="arc" viewBox="0 0 40 40" aria-hidden="true"><path d="M30 6 A16 16 0 0 0 6 24" fill="none" stroke="#d9c9a8" stroke-width="5" stroke-linecap="round"/><path d="M30 6 A16 16 0 0 0 8 16" fill="none" stroke="#d9622b" stroke-width="5" stroke-linecap="round"/><circle cx="8.5" cy="15" r="4" fill="#d9622b"/></svg></td><td class="nm">Fade</td><td>The arc on the left with the FADE tag beside it. Drag its knob to set how see through the disc becomes when locked; the knob shows the level. It still works while locked.</td></tr>
+      <tr><td class="ic"><svg class="arc" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 30 A16 16 0 0 1 20 4" fill="none" stroke="#d9c9a8" stroke-width="5" stroke-linecap="round"/><path d="M8 30 A16 16 0 0 1 9 14" fill="none" stroke="#7c8b3a" stroke-width="5" stroke-linecap="round"/><circle cx="9.5" cy="13" r="4" fill="#7c8b3a"/></svg></td><td class="nm">Size</td><td>The arc from 10 to 12 o'clock with the SIZE tag beside it. Drag its knob to scale the whole disc from 60 to 160 percent; the knob shows the percent. Also a slider in Settings, Layout.</td></tr>
+    </table>
+    <h3>Keyboard</h3>
+    <div class="keys">
+      <div><kbd>S</kbd> Settings</div><div><kbd>C</kbd> Chart</div><div><kbd>T</kbd> Train</div><div><kbd>P</kbd> Plan</div>
+      <div><kbd>N</kbd> New note</div><div><kbd>L</kbd> Lock or unlock</div><div><kbd>Esc</kbd> Close the open window</div>
+    </div>
+    <p class="tip">Keys work when the disc has focus (click it first). While locked, the disc does not take keys or clicks, so use the tray icon or the lock button.</p>
+  </div>
+
+      <p class="tip">Keys work when the disc has focus (click it first). While locked, the disc does not take keys or clicks, so use the tray icon or the lock button.</p>
+    </div>
+  </details>
+
+  <details class="fold" id="notes">
+    <summary>Sticky notes <small>pin, save, checklists, colors, pen, All notes</small></summary>
+    <div class="body">
+      <p>Each note is its own small window, always on top. Make one with the Notes button, the <kbd>N</kbd> key, the plus on any note, or "New note" in the tray. Drag it by the strip under the pin or by the paper; a sweep across the text selects it.</p>
+      <h3>On the note</h3>
+    <table>
+      <tr><th>Icon</th><th>Name</th><th>What it does</th></tr>
+      <tr><td class="ic"><span class="node pin small"></span></td><td class="nm">Pin</td><td>The red pin at the top. Press it and the note is fixed in place and lets clicks pass through it, so it sits over your work without getting in the way. Only the pin itself still takes a click, to unpin. Pinning an unsaved note saves it first.</td></tr>
+      <tr><td class="ic"><span class="node small"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></td><td class="nm">New</td><td>Asks for a blank note or one with the same paper, text, font, and glow as this note, beside this one.</td></tr>
+      <tr><td class="ic"><span class="node small"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></span></td><td class="nm">Save <kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Appears once the note has unsaved content. Closing a note with unsaved changes asks "Save this note?" with Yes and No. An empty note leaves no trace when closed.</td></tr>
+      <tr><td class="ic"><span class="node small"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></span></td><td class="nm">Menu</td><td>Pin or Unpin, Duplicate, All notes, Delete. Delete keeps the note for 30 days with an Undo toast and a Restore action in All notes.</td></tr>
+      <tr><td class="ic"><span class="node small"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span></td><td class="nm">Close</td><td>Closes the note window. The note stays in All notes and reopens from there.</td></tr>
+      <tr><td class="ic"><span class="node small"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4l-4 12-4-4z"/><path d="M4 20l8-8"/></svg></span></td><td class="nm">Resize</td><td>The grip in the bottom corner. Drag to make the paper bigger or smaller; the text reflows.</td></tr>
+    </table>
+      <h3>Formatting toolbar</h3>
+    <table>
+      <tr><th>Icon</th><th>Name</th><th>What it does</th></tr>
+      <tr><td class="ic"><span class="node small letter"><b>B</b></span></td><td class="nm">Bold <kbd>Ctrl</kbd>+<kbd>B</kbd></td><td>Bold for the selection or from here on.</td></tr>
+      <tr><td class="ic"><span class="node small letter"><i>I</i></span></td><td class="nm">Italic <kbd>Ctrl</kbd>+<kbd>I</kbd></td><td>Italic.</td></tr>
+      <tr><td class="ic"><span class="node small letter"><u>U</u></span></td><td class="nm">Underline <kbd>Ctrl</kbd>+<kbd>U</kbd></td><td>Underline.</td></tr>
+      <tr><td class="ic"><span class="node small letter"><s>S</s></span></td><td class="nm">Strikethrough</td><td>Cross the text out, handy for done items. <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>.</td></tr>
+      <tr><td class="ic"><span class="node small"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="4.5" cy="18" r="1.4" fill="currentColor" stroke="none"/></svg></span></td><td class="nm">Bullets</td><td>Press once for dots, again for numbers, a third time for a checklist with boxes, and once more for plain text. Click a box to check it off; that works even on a pinned note.</td></tr>
+      <tr><td class="ic"><span class="node small letter" style="font-size:14px;letter-spacing:-0.02em">Aa</span></td><td class="nm">Font</td><td>Eleven faces: the theme's body, display, and mono fonts, Caveat handwriting, Nunito, Shrikhand, Space Mono, and system faces such as Segoe Print.</td></tr>
+      <tr><td class="ic"><span class="node small"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20h4l10-10-4-4L4 16z"/><path d="M12 8l4 4"/></svg></span></td><td class="nm">Pen</td><td>Draw on the note with a mouse, pen, or finger. The pen row has colors, a custom color, an eraser, Undo (<kbd>Ctrl</kbd>+<kbd>Z</kbd>), and Clear ink. Pressure changes the line width on a pen tablet.</td></tr>
+      <tr><td class="ic"><span class="node small"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18c1.5 0 2-1 2-2s-1-2 0-3 3 0 4-1 2-3 2-3a9 9 0 0 0-8-9z"/><circle cx="7.5" cy="11" r="1.3" fill="currentColor"/><circle cx="10" cy="7" r="1.3" fill="currentColor"/><circle cx="15" cy="7" r="1.3" fill="currentColor"/></svg></span></td><td class="nm">Style</td><td>Opens the style drawer: nine preset circles (Match theme, Classic yellow, Pink, Mint, Sky, Peach, Lilac, Kraft, Neon night), paper color and opacity, text color and size, and note glow and text glow with their own colors and strength. Colors come from a small chooser with swatches, a hex box, and a More button for the full picker. If a text color could not be read on the paper, it is adjusted and the drawer says so. The glow is a ring around the paper. Every note keeps its curled corner.</td></tr>
+    </table>
+      <p><strong>All notes</strong>, from the note menu, lists every note with its paper, first line, date, and tags for Open, Closed, Pinned, or Unsaved, with buttons to open or close, pin, and delete. Deleted notes fold away under "Recently deleted". Up to 12 notes can be open at once; the rest wait there, and every note comes back where you left it after a restart.</p>
+    </div>
+  </details>
+
+  <details class="fold" id="settings">
+    <summary>Settings <small>look, clocks, layout, device, screen</small></summary>
+    <div class="body">
+      <div class="two">
+        <div>
+      <h3>Look</h3>
+      <ul>
+        <li><strong>Theme.</strong> Fifteen: Woodstock, Groovy Dark, Night, Vice, Trip, Tie Dye, Flower Power, Lava Lamp, Dashiki, Peace Corps, Fillmore, VW Bus, Sunset Strip, Denim, Polaroid. Each brings its own fonts and colors. The tray icon follows the theme unless you tell it to keep one.</li>
+        <li><strong>Appearance.</strong> The Fade when locked slider (same as the arc), plus custom widget, text, and accent colors that override any theme, with "Reset colors to theme".</li>
+        <li><strong>Neon outline.</strong> A glowing outline around the shapes, with its color and glow strength.</li>
+      </ul>
+      <h3>Clocks</h3>
+      <ul>
+        <li><strong>Clock.</strong> 12h, 24h, or Both (a small military chip next to each time). Show or hide seconds and your own local time.</li>
+        <li><strong>Time offset.</strong> Slide every clock forward or back by whole hours to answer "what time is it there at 4 my time"; Reset snaps back to now.</li>
+        <li><strong>Where you are.</strong> "Detect my city" asks your computer for a location once and matches it against the bundled list of cities. Nothing is sent anywhere.</li>
+        <li><strong>Cities.</strong> Search by city, country, or time zone and add as many as you like. Remove one with its X.</li>
+      </ul>
+        </div>
+        <div>
+      <h3>Layout</h3>
+      <ul>
+        <li><strong>Shell.</strong> Watch (the round disc) or Panel (a tall card with a header).</li>
+        <li><strong>Design.</strong> Eighteen ways to show the cities inside the disc: Watch face, Cards, Slim, Soft sheet, Capsule stack, Timeline rail, Daylight bars, Split panel, Dial, Orbit, Day arcs, Floating chips, Bubble cluster, Honeycomb, Postcards, Fanned deck, Typographic, and Ticker tape.</li>
+        <li><strong>Sizing.</strong> Size from 60 to 160 percent, the Panel width, time size, and the military chip size.</li>
+      </ul>
+      <h3>Device</h3>
+      <ul>
+        <li><strong>Start with system</strong>, <strong>Put an icon on the desktop</strong>, <strong>Window height</strong> (Fit content or Manual, Panel shell), <strong>Tray and shortcut icon</strong> (Follow theme or Keep current), <strong>Restart TimePeace</strong>, and <strong>Quit</strong>.</li>
+        <li><strong>About TimePeace.</strong> Your version, "Check for updates", the license, and credits.</li>
+      </ul>
+      <h3>Screen</h3>
+      <ul><li><strong>Keep screen awake</strong> stops the display from sleeping while TimePeace shows.</li></ul>
+      <p class="tip">Reset to defaults, at the bottom, puts every setting back and keeps your notes.</p>
+    </div>
+  </div>
+        </div>
+      </div>
+      <p class="tip">Reset to defaults, at the bottom, puts every setting back and keeps your notes.</p>
+    </div>
+  </details>
+
+  <details class="fold" id="tray">
+    <summary>Tray menu <small>show, hide, notes, restart, lock, in front, start with system, quit</small></summary>
+    <div class="body">
+    <p>Right click the TimePeace icon in the system tray (Windows), menu bar (macOS), or status area (Linux):</p>
+    <ul>
+      <li><strong>Show</strong> and <strong>Hide</strong> the disc. Show is also a double click on the icon.</li>
+      <li><strong>Update available: vX</strong> appears only when there is a newer version and opens the download page.</li>
+      <li><strong>New note</strong> and <strong>Close all notes</strong> (closing never deletes).</li>
+      <li><strong>Bring to screen</strong> centers the disc on the monitor under your cursor if it ended up off screen.</li>
+      <li><strong>Restart</strong> reloads cleanly.</li>
+      <li><strong>Locked, click through</strong>, <strong>In front of other windows</strong>, and <strong>Start with system</strong> are check marks.</li>
+      <li><strong>Quit.</strong></li>
+    </ul>
+  </div>
+
+    </div>
+  </details>
+
+  <details class="fold" id="new">
+    <summary>What is new in 1.7.1 <small>2026-09-25</small></summary>
+    <div class="body notes">
+<h4>Added</h4>
+<ul>
+<li>Links in notes: a web or mail address pasted or typed into a note becomes a link (notes written earlier get theirs on the next open). A click shows a small card with Open, Copy and Unlink; Ctrl+click, a middle click, or a pinned note opens at once, in the system browser, never inside the note. Only web and mail addresses are kept as links.</li>
+</ul>
+    </div>
+  </details>
+
+  <details class="fold" id="updates">
+    <summary>Updates, privacy, and help <small>one request a day, everything stays on your computer</small></summary>
+    <div class="body">
+      <p><strong>Updates.</strong> Once a day, and when you press "Check for updates" in Settings, TimePeace asks this site for the newest version. A newer one shows as a red dot on the Settings button, in Settings, and in the tray, always as a link to this page. Nothing is ever installed on its own; download the new build, run it, and your settings and notes carry over.</p>
+      <p><strong>Privacy.</strong> Everything stays on your computer, in <code>%APPDATA%\TimePeace</code> on Windows, <code>~/Library/Application Support/TimePeace</code> on macOS, or <code>~/.config/TimePeace</code> on Linux. The update check is the only network request, and it sends nothing but the app version. Details in <a href="https://github.com/PythonDeuce/TimePeace-app/blob/main/PRIVACY.md">PRIVACY.md</a>.</p>
+      <p><strong>Help.</strong> <a href="https://github.com/PythonDeuce/TimePeace-app/blob/main/TROUBLESHOOTING.md">TROUBLESHOOTING.md</a> covers the first start warnings, a disc that went off screen, missing settings, and the log file.</p>
+    </div>
+  </details>
+
+  <footer>
+    <p>Copyright 2026 EABA. TimePeace 1.1.0 and later are licensed for personal and internal use only: no modification, reverse engineering, or redistribution. Versions 1.0.0 through 1.0.6 were released under the MIT License, and that grant stands for those versions. Full text in <a href="https://github.com/PythonDeuce/TimePeace-app/blob/main/LICENSE">LICENSE</a>. City data from GeoNames (CC BY 4.0). Fonts under the SIL Open Font License and the Apache License 2.0.</p>
+  </footer>
+</main>
+</body>
+</html>
