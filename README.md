@@ -1,36 +1,43 @@
-# TimePeace
+<p align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.png">
+  <img src="assets/banner-light.png" alt="TimePeace watch faces" width="100%">
+</picture>
+</p>
 
-A world clock that lives on your desktop: every city you care about in one disc, a military time trainer, a meeting finder, and sticky notes that pin anywhere on the screen. Windows, macOS, and Linux. An EABA product.
+<h1 align="center">TimePeace</h1>
+<h3 align="center">Every city you care about, on one watch face that sits on your desktop.</h3>
 
-Download page: https://pythondeuce.github.io/TimePeace-app/
+<p align="center"><a href="https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-windows.exe"><img src="assets/download-button.png" alt="Download for Windows" width="420"></a><br>Also for <a href="https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-macos-arm64.zip">Mac (Apple silicon)</a> · <a href="https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-macos-intel.zip">Mac (Intel)</a> · <a href="https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-linux">Linux</a></p>
 
-Direct downloads (always the latest release):
+## Everything at a glance
 
-- Windows: https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-windows.exe
-- macOS, Apple silicon (M1 and later): https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-macos-arm64.zip
-- macOS, Intel: https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-macos-intel.zip
-- Linux: https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-linux
+| Feature | What it does | |
+|---|---|:-:|
+| **Watch face** | Your city in the middle, other cities around it, large time and date | <img src="assets/watch-groovy-dark.png" width="150"> |
+| **Plan** | Name it, pick a time, press Add. Every city lines up. | <img src="assets/plan-add-night.png" width="150"> |
+| **Alarms** | Pops up in front of every window and rings until you press Dismiss or Snooze | ⏰ |
+| **Sticky notes** | Pin anywhere on screen; talk into the microphone, dictation runs on your computer | <img src="assets/note-denim.png" width="130"> |
+| **Looks** | 15 themes and 18 layouts | <img src="assets/watch-vice.png" width="150"> |
+| **Settings** | The things people change most, on one page | <img src="assets/settings-night.png" width="150"> |
+| **Trainer** | A military time trainer | 🎖️ |
 
-This repository holds the download page and the release builds. The source is developed privately by EABA.
+## Install in 3 steps
 
-- The builds are not code signed; see [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for the SmartScreen and Gatekeeper steps and everything else.
-- The app's only network use is the daily update check and, with Updates set to Automatic, the download of a new release; see [PRIVACY.md](PRIVACY.md).
-- TimePeace 1.1.0 and later are licensed for personal and internal use only; see [LICENSE](LICENSE). Versions 1.0.0 through 1.0.6 were released under the MIT License.
+1. **Download** `TimePeace-windows.exe` with the button above.
+2. **Open it.** If Windows shows a blue *"Windows protected your PC"* box, click **More info**, then **Run anyway**. (TimePeace is not code signed, so Windows asks once.)
+3. **Make it yours.** Add your cities, pick a look, and drag the clock where you want it.
 
-## Use it from an assistant (MCP)
+## Downloads
 
-TimePeace is also an MCP server, so Claude Desktop or another MCP client can read and steer your clock: ask what time it is in the cities you follow, add or remove a city, switch the theme or layout, lock the clock, or create and read sticky notes. It is local only and needs the clock to be running. Point the client at the installed app with the `--mcp` flag, for example in Claude Desktop (Settings, Developer, Edit config):
+| System | File |
+|---|---|
+| **Windows** | [TimePeace-windows.exe](https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-windows.exe) |
+| Mac, Apple silicon (M1 and later) | [TimePeace-macos-arm64.zip](https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-macos-arm64.zip) |
+| Mac, Intel | [TimePeace-macos-intel.zip](https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-macos-intel.zip) |
+| Linux | [TimePeace-linux](https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-linux) |
 
-```json
-{ "mcpServers": { "timepeace": { "command": "C:\\Users\\you\\AppData\\Local\\TimePeace\\TimePeace.exe", "args": ["--mcp"] } } }
-```
+---
 
-## Dictation and what survives an update
-
-Every sticky note has a microphone: press it, speak, and the words land at the cursor. Dictation runs on your computer with whisper.cpp (Windows, Apple Silicon Macs, Linux); the 60 MB speech model is fetched once, when you first press a microphone or from Settings, Dictation, where you can also switch from English to Any language. Each note also has its own In front / Behind button, so a note can sit under your other windows instead of over them.
-
-Your cities, looks and notes live in TimePeace's settings folder, never in the program files, so updates leave them alone; a copy is taken right before every update, and Settings, About shows where the folder is.
-
-Already have an older TimePeace that never offered the update? Download the new file and run it: it finds your old copy, asks once, replaces it in place and keeps your cities, looks and notes.
-
-Hold the microphone in a note and talk; release, and the words are there. Hotkeys work from any window: Ctrl+Alt+N for a new note, hold Ctrl+Alt+M to talk into the note you touched last, Ctrl+Alt+F for in front or behind, Ctrl+Alt+1 to 9 to jump to an open note (Ctrl+Option on the Mac); change them in Settings, Hotkeys, and the keys button on every note lists them.
+<p align="center"><a href="https://github.com/PythonDeuce/TimePeace-app/blob/main/TROUBLESHOOTING.md">Help and troubleshooting</a> · <a href="PRIVACY.md">Privacy</a> · <a href="LICENSE">License</a> · <a href="https://github.com/PythonDeuce/TimePeace-app/releases">All releases</a></p>
+<p align="center">TimePeace is an EABA product. It goes online only for the daily update check and, if you use dictation, a one time speech model download.</p>
