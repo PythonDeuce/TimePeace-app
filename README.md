@@ -18,9 +18,21 @@
 | **Plan** | Name it, pick a time, press Add. Every city lines up. | <img src="assets/plan-add-night.png" width="150"> |
 | **Alarms** | Pops up in front of every window and rings until you press Dismiss or Snooze | ⏰ |
 | **Sticky notes** | Pin anywhere on screen; talk into the microphone, dictation runs on your computer | <img src="assets/note-denim.png" width="130"> |
-| **Looks** | 15 themes and 18 layouts | <img src="assets/watch-vice.png" width="150"> |
-| **Settings** | The things people change most, on one page | <img src="assets/settings-night.png" width="150"> |
+| **Looks** | 15 themes, 18 animated layouts and a few classic ones | <img src="assets/watch-vice.png" width="150"> |
+| **Settings** | A side rail of plain panes (Look, Clocks, Notes, Desktop, Shortcuts, Voice typing, About) with a search box | <img src="https://pythondeuce.github.io/TimePeace-app/shots/settings-look.webp" width="150"> |
 | **Trainer** | A military time trainer | 🎖️ |
+
+## 18 animated layouts
+
+Small scenes move behind your clocks, and your cities sit in them: a honey cell, a flower, a planet, a lily pad. The **Animate layout** switch in Settings, Look turns the motion off and leaves a still picture.
+
+<p align="center"><img src="https://pythondeuce.github.io/TimePeace-app/shots/anim-aurora.webp" width="30%" alt="Northern Lights layout"> <img src="https://pythondeuce.github.io/TimePeace-app/shots/anim-honeycomb.webp" width="30%" alt="Bees and Honeycomb layout"> <img src="https://pythondeuce.github.io/TimePeace-app/shots/anim-sunmoon.webp" width="30%" alt="Sun and Moon layout"></p>
+
+## New in 1.11: a simpler Settings
+
+Settings now has a side rail down the left, with Look, Clocks, Notes, Desktop, Shortcuts, Voice typing and About, and a search box on top that jumps to any setting.
+
+<p align="center"><img src="https://pythondeuce.github.io/TimePeace-app/shots/settings-look.webp" width="520" alt="The Settings window with its side rail"></p>
 
 ## Install in 3 steps
 
