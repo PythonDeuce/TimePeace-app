@@ -1,0 +1,91 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TimePeace</title><style>
+@font-face{font-family:Nunito;src:url(fonts/Nunito-variable.woff2) format("woff2");font-weight:200 1000}
+@font-face{font-family:Shrikhand;src:url(fonts/Shrikhand-400.woff2) format("woff2")}
+:root{--bg:#0a0c12;--surface:#12151e;--line:rgba(255,255,255,.08);--ink:#f4f1ea;--muted:#a9a59b;--accent:#f0a83a;--on:#16110a;
+--s1:8px;--s2:16px;--s3:24px;--s4:32px;--s5:48px;--s6:64px;--s7:96px;--s8:144px;--max:1120px;--r:28px}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;overflow-x:clip;background:var(--bg);color:var(--ink);font:400 20px/1.6 Nunito,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+img,video{display:block;max-width:100%}a{color:inherit}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--s4)}
+h1,h2{font-family:Shrikhand,Georgia,serif;font-weight:400;letter-spacing:-.01em;margin:0}
+h1{font-size:84px;line-height:1.02}h2{font-size:56px;line-height:1.08}
+h3{font-size:36px;line-height:1.15;font-weight:900;letter-spacing:-.015em;margin:0 0 var(--s2)}
+.lead{font-size:24px;line-height:1.5;color:var(--muted);margin:var(--s3) auto 0;max-width:620px}
+.eyebrow{font-size:17px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 var(--s2)}
+/* nav */
+.nav{position:sticky;top:0;z-index:5;background:rgba(10,12,18,.72);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:72px}
+.brand{display:flex;align-items:center;gap:0;font-family:Shrikhand,Georgia,serif;font-size:26px;text-decoration:none}.brand .mark{width:32px;height:32px;margin-right:10px}.brand b{font-weight:400;color:var(--accent)}
+.nav nav{display:flex;align-items:center;gap:var(--s4);font-size:17px;font-weight:700}.nav nav a{text-decoration:none;color:var(--muted)}.nav nav a.pill{color:var(--on);background:var(--accent);padding:8px 18px;border-radius:999px}
+/* hero */
+.hero{position:relative;text-align:center;padding-top:var(--s6);padding-bottom:var(--s8)}
+.hero .wv{position:relative;width:100%;max-width:500px;aspect-ratio:1/1;margin:0 auto var(--s5)}.hero .wv::before{content:"";position:absolute;left:50%;top:50%;width:196%;height:156%;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(240,168,58,.20),transparent);pointer-events:none}
+.hero>*{position:relative}
+.hero .w{position:relative;display:block;width:100%;height:100%;object-fit:contain;margin:0;-webkit-mask-image:radial-gradient(closest-side,#000 86%,transparent);mask-image:radial-gradient(closest-side,#000 86%,transparent)}
+h1 .g{background:linear-gradient(180deg,#ffd796,#f0a83a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cta{margin-top:var(--s5);display:flex;flex-direction:column;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:12px;background:var(--accent);color:var(--on);font-weight:900;font-size:22px;padding:18px 34px;border-radius:999px;text-decoration:none;box-shadow:0 10px 30px rgba(240,168,58,.22);transition:transform .2s,box-shadow .2s}.btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(240,168,58,.32)}
+.meta{margin:var(--s2) 0 0;font-size:17px;color:var(--muted)}.alt{margin:var(--s1) 0 0;font-size:17px;color:var(--muted)}.alt a{color:var(--ink);text-underline-offset:3px}
+/* sections */
+section{padding:var(--s8) 0;border-top:1px solid var(--line)}
+.head{text-align:center;margin-bottom:var(--s7)}
+.row{display:grid;grid-template-columns:5fr 7fr;gap:var(--s7);align-items:center}.row+.row{margin-top:var(--s8)}
+.row.flip .copy{order:2}.row.wide{grid-template-columns:7fr 5fr}.frame .shot.land{max-height:none;width:100%}
+.copy p{margin:0;color:var(--muted);font-size:21px;max-width:440px}
+.frame{background:linear-gradient(180deg,#151925,#10131b);border:1px solid var(--line);border-radius:var(--r);padding:var(--s5);display:flex;justify-content:center;align-items:center;min-height:560px;box-shadow:0 40px 80px rgba(0,0,0,.35)}
+.frame>img{max-height:500px;width:auto;border-radius:16px}
+.frame .shot{box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.frame .free{max-height:440px;filter:drop-shadow(0 24px 40px rgba(0,0,0,.55))}
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3) var(--s2);width:100%;max-width:520px}
+.board img{width:100%;filter:drop-shadow(0 18px 24px rgba(0,0,0,.5))}
+.board img:nth-child(odd){transform:rotate(-2.5deg)}.board img:nth-child(even){transform:rotate(2deg)}
+.board img:nth-child(4){grid-column:1/2;margin-left:50%}.board img:nth-child(5){grid-column:2/3;margin-left:50%}
+/* animated layouts */
+.anim{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s4) var(--s3);margin:0;padding:0;list-style:none}
+.anim li{text-align:center}.anim img{width:100%;height:auto;filter:drop-shadow(0 24px 30px rgba(0,0,0,.55))}
+.anim span{display:block;margin-top:var(--s2);font-size:17px;font-weight:800;letter-spacing:.06em;color:var(--muted)}
+.note{max-width:620px;margin:var(--s6) auto 0;text-align:center;color:var(--muted);font-size:21px}.note b{color:var(--ink)}
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3);list-style:none;margin:0;padding:0;counter-reset:s}
+.steps li{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:var(--s5) var(--s4)}
+.steps li::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:44px;height:44px;border-radius:50%;border:1.5px solid var(--accent);color:var(--accent);font-weight:900;font-size:20px;margin-bottom:var(--s3)}
+.steps h3{font-size:26px;margin-bottom:var(--s1)}.steps p{margin:0;color:var(--muted)}.steps b{color:var(--ink)}
+.safe{margin-top:var(--s3);display:grid;grid-template-columns:5fr 7fr;gap:var(--s7);background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:var(--s5)}
+.safe h3{font-size:26px;margin:0}.safe ul{margin:0;padding:0;list-style:none;color:var(--muted)}.safe li{padding:12px 0;border-top:1px solid var(--line)}.safe li:first-child{border-top:0;padding-top:0}
+/* closing */
+.close{text-align:center;position:relative;overflow:hidden}.close .lead{margin-top:var(--s2)}
+.foot{border-top:1px solid var(--line);padding:var(--s5) 0 var(--s6);font-size:17px;color:var(--muted)}.foot .wrap{display:flex;justify-content:space-between;gap:var(--s4);flex-wrap:wrap}.foot nav a{margin-left:var(--s3)}
+/* reveal */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+@media (max-width:860px){
+ body{font-size:18px}.wrap{padding:0 var(--s3)}h1{font-size:40px}h2{font-size:38px}h3{font-size:28px}.lead{font-size:20px;margin-top:var(--s2)}
+ .nav .wrap{height:60px}.nav nav a:not(.pill){display:none}.brand{font-size:22px}.brand .mark{width:28px;height:28px}.nav nav a.pill{padding:6px 14px;font-size:16px}
+ .hero{padding-top:var(--s4);padding-bottom:var(--s7)}.hero .wv{max-width:250px;margin-bottom:var(--s3)}.hero .wv::before{width:156vw;height:192%}.cta{margin-top:var(--s4)}.btn{width:100%;justify-content:center;font-size:20px}
+ section{padding:var(--s7) 0}.head{margin-bottom:var(--s5)}
+ .row,.row.flip,.row.wide{grid-template-columns:minmax(0,1fr);gap:var(--s4)}.row.flip .copy{order:0}.row+.row{margin-top:var(--s7)}.copy p{font-size:18px}
+ .frame{min-height:0;padding:var(--s3)}.frame>img{max-height:440px}.frame .free{max-height:none;width:100%}
+ .anim{grid-template-columns:repeat(2,1fr);gap:var(--s3) var(--s2)}.anim span{font-size:15px;margin-top:var(--s1)}.note{margin-top:var(--s5);font-size:18px}
+ .steps{grid-template-columns:1fr}.steps li{padding:var(--s4)}.safe{grid-template-columns:1fr;gap:var(--s3);padding:var(--s4)}
+ .foot .wrap{flex-direction:column}.foot nav a{margin:0 var(--s3) 0 0}}
+</style></head><body>
+<header class="nav"><div class="wrap"><a class="brand" href="#"><svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="40" fill="none" stroke="var(--accent)" stroke-width="8"/><path d="M50 50V14M50 50L75.5 75.5M50 50L24.5 75.5" fill="none" stroke="var(--ink)" stroke-width="8" stroke-linecap="round"/><circle cx="50" cy="50" r="6" fill="var(--gold)"/></svg>Time<b>Peace</b></a><nav><a href="#features">Features</a><a href="#layouts">Layouts</a><a href="#start">Get started</a><a class="pill" href="#get">Download</a></nav></div></header>
+<main>
+<div class="wrap hero"><div class="wv"><video class="w" autoplay muted loop playsinline poster="hero-startup-poster.png" aria-label="TimePeace opening: a star glints, sand gathers into the watch, and the shutter opens on the face"><source src="hero-startup.webm" type="video/webm"><source src="hero-startup.mp4" type="video/mp4"></video></div>
+<h1>The whole world.<br><span class="g">One watch face.</span></h1><p class="lead">Every city you care about, on one watch face that sits on your desktop.</p><div class="cta"><a class="btn" href="https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-windows.exe"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M2 4.5l8-1.1v7.8H2zm9-1.2L22 2v9.2H11zM2 12.4h8v7.8l-8-1.1zm9 0h11V22l-11-1.5z"/></svg><span>Download for Windows</span></a><p class="meta">Version 1.11.1 · one file</p><p class="alt">Also for <a href="https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-macos-arm64.zip">Mac (Apple silicon)</a>, <a href="https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-macos-intel.zip">Mac (Intel)</a> and <a href="https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-linux">Linux</a></p></div></div>
+<section id="features"><div class="wrap">
+<article class="row rv"><div class="copy"><p class="eyebrow">Plan</p><h3>Every city lines up.</h3><p>Name a meeting, an alarm or a goal and pick a time. TimePeace shows what that time is in your other cities.</p></div><div class="frame"><img class="shot" src="shots/plan-add-night.png" alt="Adding a moment in Plan"></div></article>
+<article class="row flip rv"><div class="copy"><p class="eyebrow">Alarms</p><h3>It waits for you.</h3><p>An alarm pops up on the watch, in front of everything, until you press Dismiss or Snooze.</p></div><div class="frame"><img class="free" src="shots/alarm-ringing-crop.png" alt="An alarm ringing on the watch face with Dismiss, Snooze and Open"></div></article>
+<article class="row rv"><div class="copy"><p class="eyebrow">Sticky notes</p><h3>Notes that stay put.</h3><p>Paper notes on your desktop, each with a curled corner and a pin. Pick a color or a paper, then pin it so it stays where you left it.</p></div><div class="frame"><div class="board"><img src="shots/notes/yellow-crop.png" alt="Classic yellow ruled note"><img src="shots/notes/pink-crop.png" alt="Pink note"><img src="shots/notes/kraft-crop.png" alt="Kraft paper note"><img src="shots/notes/sky-crop.png" alt="Sky blue grid note"><img src="shots/notes/neon-crop.png" alt="Neon night note"></div></div></article>
+<article class="row flip wide rv"><div class="copy"><p class="eyebrow">Settings</p><h3>Everything in plain words.</h3><p>A side rail lists Look, Clocks, Notes, Desktop, Shortcuts, Voice typing and About. Pick one, or search for what you want and go straight to it.</p></div><div class="frame"><img class="shot land" src="shots/settings-look.webp" alt="The Settings window with a side rail: Look, Clocks, Notes, Desktop, Shortcuts, Voice typing and About, and a search box"></div></article>
+</div></section>
+<section id="layouts"><div class="wrap"><div class="head rv"><h2>18 animated layouts</h2><p class="lead">Little scenes that move behind your clocks. Your cities sit right in them.</p></div><ul class="anim rv"><li><img src="shots/anim-aurora.webp" width="512" height="512" loading="lazy" alt="Northern Lights layout: a small animated scene behind your clocks"><span>NORTHERN LIGHTS</span></li><li><img src="shots/anim-honeycomb.webp" width="512" height="512" loading="lazy" alt="Bees and Honeycomb layout: a small animated scene behind your clocks"><span>BEES &AMP; HONEYCOMB</span></li><li><img src="shots/anim-butterflies.webp" width="512" height="512" loading="lazy" alt="Butterfly Garden layout: a small animated scene behind your clocks"><span>BUTTERFLY GARDEN</span></li><li><img src="shots/anim-sunmoon.webp" width="512" height="512" loading="lazy" alt="Sun and Moon layout: a small animated scene behind your clocks"><span>SUN &AMP; MOON</span></li><li><img src="shots/anim-campfire.webp" width="512" height="512" loading="lazy" alt="Campfire layout: a small animated scene behind your clocks"><span>CAMPFIRE</span></li><li><img src="shots/anim-orbit.webp" width="512" height="512" loading="lazy" alt="Planet Orbit layout: a small animated scene behind your clocks"><span>PLANET ORBIT</span></li></ul><p class="note rv">Not a fan of motion? The <b>Animate layout</b> switch in Settings freezes any scene into a still picture.</p></div></section>
+<section id="start"><div class="wrap"><div class="head rv"><h2>Up and running</h2></div>
+<ol class="steps rv"><li><h3>Download</h3><p>One file, TimePeace.exe.</p></li><li><h3>Open it</h3><p>If Windows shows a blue SmartScreen box, choose <b>More info</b>, then <b>Run anyway</b>.</p></li><li><h3>Make it yours</h3><p>Add your cities, pick a look, and drag the clock where you want it.</p></li></ol>
+<div class="safe rv"><h3>Is it safe?</h3><ul><li>Windows warns because TimePeace is not code signed yet.</li><li>No account, no telemetry, no analytics.</li><li>It goes online only to check GitHub for updates once a day, and once to download the speech model if you use dictation.</li><li>Updates are checked against the checksum published with each release.</li></ul></div>
+</div></section>
+<section id="get" class="close"><div class="wrap rv"><h2>Put the whole world<br>on your desktop.</h2><div class="cta"><a class="btn" href="https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-windows.exe"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M2 4.5l8-1.1v7.8H2zm9-1.2L22 2v9.2H11zM2 12.4h8v7.8l-8-1.1zm9 0h11V22l-11-1.5z"/></svg><span>Download for Windows</span></a><p class="meta">Version 1.11.1 · one file</p><p class="alt">Also for <a href="https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-macos-arm64.zip">Mac (Apple silicon)</a>, <a href="https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-macos-intel.zip">Mac (Intel)</a> and <a href="https://github.com/PythonDeuce/TimePeace-app/releases/latest/download/TimePeace-linux">Linux</a></p></div></div></section>
+</main>
+<footer class="foot"><div class="wrap"><span>TimePeace is an EABA product.</span><nav><a href="https://github.com/PythonDeuce/TimePeace-app/blob/main/TROUBLESHOOTING.md">Help</a><a href="https://github.com/PythonDeuce/TimePeace-app/blob/main/PRIVACY.md">Privacy</a><a href="https://github.com/PythonDeuce/TimePeace-app/releases">All releases</a></nav></div></footer>
+<script>const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});document.querySelectorAll('.rv').forEach(el=>io.observe(el));</script>
+</body></html>
