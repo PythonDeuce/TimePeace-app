@@ -1,0 +1,6 @@
+/* Nunito and Shrikhand are the landing page's own copies. Space Mono and Caveat are the app faces the live previews use. */
+@font-face { font-family: 'Shrikhand'; font-style: normal; font-weight: 400; font-display: swap; src: url('../fonts/Shrikhand-400.woff2') format('woff2'); }
+@font-face { font-family: 'Nunito'; font-style: normal; font-weight: 200 1000; font-display: swap; src: url('../fonts/Nunito-variable.woff2') format('woff2'); }
+@font-face { font-family: 'Space Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('app/fonts/SpaceMono-400.woff2') format('woff2'); }
+@font-face { font-family: 'Space Mono'; font-style: normal; font-weight: 700; font-display: swap; src: url('app/fonts/SpaceMono-700.woff2') format('woff2'); }
+@font-face { font-family: "Caveat"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("app/fonts/Caveat-variable.woff2") format("woff2"); }

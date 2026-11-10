@@ -1,0 +1,21 @@
+/* Groovy Dark: the Woodstock palette on cocoa. Fonts are bundled locally. */
+:root {
+  --bg: #2b1e17;
+  --bg-pattern: none;
+  --text: #f4e9d3;
+  --muted: #c9d47a; --muted-tint: #c9d47a;
+  --accent: #e8b23a; --accent-ink: #e8b23a;
+  --secondary: #7c8b3a;
+  --card: #3b2a20;
+  --card-outline: 0 0 0 2px #e8b23a;
+  --hero-outline: 0 0 0 3px #d9622b;
+  --radius: 18px;
+  --font-display: "Shrikhand", "Georgia", serif;
+  --font-body: "Nunito", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Space Mono", "SF Mono", Consolas, monospace;
+  --chip-bg: #e8b23a; --chip-text: #3b2a20; --chip-border: 0; --chip-shadow: none; --chip-radius: 999px;
+  --btn-bg: #d9622b; --btn-text: #f4e9d3; --btn-border: 2px solid #f4e9d3; --btn-shadow: none; --btn-radius: 999px;
+  --wordmark-time: #f4e9d3; --wordmark-peace: #e8b23a; --wordmark-tilt: -2deg; --wordmark-shadow: none;
+  --mark-ring: #e8b23a; --mark-hands: #f4e9d3; --mark-dot: #d9622b;
+  --neon: #22d3ee;
+}

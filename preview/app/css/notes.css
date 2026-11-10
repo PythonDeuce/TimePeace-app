@@ -1,0 +1,469 @@
+/* TimePeace sticky notes: paper, pin, curl, toolbar, and the All notes list. */
+
+/* ===== the note ===== */
+.sticky {
+  --w: 220px; --h: 200px; --rot: 0deg; --paper: #fff59d; --ink: #3a2f00; --font: var(--font-body); --size: 15px;
+  --paper-alpha: 1; --curl: 34px; --neon: var(--accent); --glow: 14; --tneon: var(--accent); --tglow: 10;
+  position: relative; width: var(--w); box-sizing: border-box; padding-top: 22px; container-type: inline-size;
+  transform: rotate(var(--rot)); transform-origin: 50% 12px; font-family: var(--font); color: var(--ink);
+  transition: transform 0.2s ease;
+}
+.sticky[data-pinned="1"] { transform: rotate(calc(var(--rot) * 0.25)); }
+.sticky.dragging { transition: none; }
+.sticky.dragging, .sticky.resizing { user-select: none; }
+
+/* paper with the cut corner; drop-shadow follows the clip */
+.sticky-paper {
+  position: relative; height: var(--h); box-sizing: border-box; padding: 26px 16px 20px; display: flex; flex-direction: column;
+  background: color-mix(in srgb, var(--paper) calc(var(--paper-alpha) * 100%), transparent);
+  background-image: linear-gradient(180deg, color-mix(in srgb, white 7%, transparent), transparent 30%, color-mix(in srgb, black 4%, transparent));
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--curl)), calc(100% - var(--curl)) 100%, 0 100%);
+  transition: --curl 0.18s ease;
+}
+.sticky-shadow { display: none; }
+/* the drop shadow: blurred first, then cut out from under the paper (evenodd, like the glow ring), so
+   a translucent paper shows the desktop through it and never a dark slab */
+.sticky::before {
+  content: ""; position: absolute; left: 6px; right: 6px; top: 30px; height: var(--h); z-index: -1;
+  background: rgba(0, 0, 0, 0.32); filter: blur(9px);
+  clip-path: polygon(evenodd, -140px -140px, calc(100% + 140px) -140px, calc(100% + 140px) calc(100% + 140px), -140px calc(100% + 140px), -140px -140px,
+    -6px -8px, calc(100% + 6px) -8px, calc(100% + 6px) calc(100% - 8px - var(--curl)), calc(100% + 6px - var(--curl)) calc(100% - 8px), -6px calc(100% - 8px), -6px -8px);
+}
+.sticky-curl {
+  position: absolute; right: 0; bottom: 0; width: var(--curl); height: var(--curl);
+  background: linear-gradient(315deg, transparent 47%, color-mix(in srgb, var(--paper) 70%, black) 50%, color-mix(in srgb, var(--paper) 80%, white) 100%);
+  box-shadow: -4px -4px 8px rgba(0, 0, 0, 0.28);
+  transition: width 0.18s ease, height 0.18s ease;
+}
+.sticky:hover { --curl: 44px; }
+.sticky[data-pinned="1"] { --curl: 26px; }
+.sticky[data-pinned="1"]:hover { --curl: 30px; }
+
+/* note glow: a layer shaped exactly like the paper (curl included) throws a drop shadow in the
+   neon color, and an evenodd clip on the layer then cuts the paper itself out, so the glow follows
+   the fold and nothing glows behind a translucent paper. The filter runs before the clip, which is
+   what makes the shadow survive; a shadow drawn on the paper would be clipped away. */
+.sticky-glow { display: none; }
+.sticky[data-glow="1"] .sticky-glow {
+  display: block; position: absolute; left: 0; right: 0; top: 22px; height: var(--h); z-index: -1; pointer-events: none;
+  filter: drop-shadow(0 0 2px var(--neon)) drop-shadow(0 0 calc(var(--glow) * 0.35px + 2px) color-mix(in srgb, var(--neon) 55%, transparent)) drop-shadow(0 0 calc(var(--glow) * 1px + 4px) color-mix(in srgb, var(--neon) 28%, transparent)) drop-shadow(0 0 calc(var(--glow) * 2px + 6px) color-mix(in srgb, var(--neon) 12%, transparent));
+  clip-path: polygon(evenodd, -140px -140px, calc(100% + 140px) -140px, calc(100% + 140px) calc(100% + 140px), -140px calc(100% + 140px), -140px -140px,
+    0 0, 100% 0, 100% calc(100% - var(--curl)), calc(100% - var(--curl)) 100%, 0 100%, 0 0);
+}
+.sticky[data-glow="1"] .sticky-glow i {
+  display: block; width: 100%; height: 100%; background: var(--neon);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--curl)), calc(100% - var(--curl)) 100%, 0 100%);
+}
+.sticky[data-glow="1"] .sticky-paper { box-shadow: inset 0 0 0 1.5px var(--neon), inset 0 0 calc(var(--glow) * 0.5px) color-mix(in srgb, var(--neon) 35%, transparent); }
+.sticky[data-tglow="1"] .sticky-body {
+  text-shadow: 0 0 calc(var(--tglow) * 0.3px) var(--tneon), 0 0 calc(var(--tglow) * 1px) color-mix(in srgb, var(--tneon) 60%, transparent), 0 0 calc(var(--tglow) * 2px) color-mix(in srgb, var(--tneon) 30%, transparent);
+}
+
+/* text */
+/* the optional title: one line above the text, in the note's own font */
+.sticky-title {
+  position: relative; z-index: 1; flex: 0 0 auto; outline: none; font-family: var(--font); color: var(--ink);
+  font-size: calc(var(--size) * 1.06); font-weight: 800; line-height: 1.3; padding: 0 0 4px; margin: 0 0 6px;
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 20%, transparent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sticky-title:empty::before { content: attr(data-placeholder); opacity: 0.45; pointer-events: none; }
+.sticky-title[contenteditable="false"]:empty { display: none; }
+.sticky-body {
+  position: relative; z-index: 1; flex: 1 1 auto; min-height: 0; overflow: auto; outline: none; font-size: var(--size); line-height: 1.4;
+  font-family: var(--font); color: var(--ink); word-break: break-word; scrollbar-width: none;
+}
+.sticky-body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+.sticky-body:empty::before { content: attr(data-placeholder); opacity: 0.5; pointer-events: none; }
+/* paper patterns: ruled lines, a grid, dots, in the ink at low strength */
+.sticky[data-pattern="ruled"] .sticky-body { background-image: repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--size) * 1.5 - 1px), color-mix(in srgb, var(--ink) 18%, transparent) calc(var(--size) * 1.5 - 1px), color-mix(in srgb, var(--ink) 18%, transparent) calc(var(--size) * 1.5)); background-attachment: local; }
+.sticky[data-pattern="grid"] .sticky-body { background-image: linear-gradient(to right, color-mix(in srgb, var(--ink) 12%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in srgb, var(--ink) 12%, transparent) 1px, transparent 1px); background-size: 20px 20px; background-attachment: local; }
+.sticky[data-pattern="dots"] .sticky-body { background-image: radial-gradient(color-mix(in srgb, var(--ink) 22%, transparent) 1px, transparent 1.5px); background-size: 16px 16px; background-attachment: local; }
+.sticky-srow .spatterns button, .sticky-srow .ssizes button { width: auto; height: auto; display: inline-block; border: 1px solid var(--ui-line); border-radius: 999px; padding: 2px 9px; font: 600 11.5px var(--font-body); background: var(--ui-input); color: var(--ui-text); cursor: pointer; margin-right: 4px; }
+.sticky-srow .spatterns button.active, .sticky-srow .ssizes button.active { background: var(--ui-accent); color: #ffffff; border-color: transparent; }
+@media (prefers-reduced-motion: reduce) { .sticky, .sticky *, .sticky *::before, .sticky *::after { transition: none !important; animation: none !important; } }
+.sticky-body ul, .sticky-body ol { margin: 0.2em 0; padding-left: 1.4em; }
+.sticky-body img { display: block; max-width: 100%; height: auto; border-radius: 4px; margin: 4px 0; }
+.nl-tools { padding: 0 0 8px; display: flex; gap: 8px; align-items: center; }
+.nl-search { flex: 1; min-width: 0; box-sizing: border-box; }
+.nl-tag { cursor: pointer; }
+.nl-tag:hover { text-decoration: underline; }
+.sticky-body li { margin: 0.28em 0; }
+.sticky-body ol > li::marker { font-weight: 800; color: var(--ink); }
+.sticky-body ul:not(.chk) > li::marker { color: var(--ink); }
+.sticky-body b, .sticky-body strong { font-weight: 800; }
+.sticky-body[contenteditable="false"] { cursor: default; }
+.sticky-ink { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+.sticky[data-pen="1"] .sticky-ink { pointer-events: auto; touch-action: none; cursor: crosshair; }
+
+/* the red pin, top middle */
+.sticky-pin {
+  position: absolute; left: 50%; top: 0; z-index: 4; width: 34px; height: 44px; padding: 0; border: 0; background: transparent; cursor: pointer;
+  transform: translate(-50%, -34%) rotate(-10deg); transform-origin: 50% 20%; transition: transform 0.2s ease, filter 0.2s ease;
+  filter: drop-shadow(6px 10px 6px rgba(0, 0, 0, 0.35));
+}
+.sticky-pin .pin-head {
+  position: absolute; left: 50%; top: 0; width: 24px; height: 24px; margin-left: -12px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ff8a8a 0, #e0201f 45%, #8f0d0d 100%);
+}
+.sticky-pin .pin-head::after {
+  content: ""; position: absolute; left: 6px; right: 6px; top: 21px; height: 8px; border-radius: 0 0 6px 6px;
+  background: linear-gradient(180deg, #c81a1a, #7a0b0b);
+}
+.sticky-pin .pin-needle {
+  position: absolute; left: 50%; top: 27px; width: 2.5px; height: 18px; margin-left: -1px;
+  background: linear-gradient(180deg, #e8e8e8, #8d8d8d 60%, #4d4d4d); border-radius: 0 0 2px 2px;
+}
+.sticky[data-pinned="1"] .sticky-pin { transform: translate(-50%, -18%) rotate(0deg) scale(0.92); filter: drop-shadow(1px 3px 2px rgba(0, 0, 0, 0.4)); }
+.sticky-pin:focus-visible { outline: 2px solid var(--focus, #58c4dc); outline-offset: 2px; border-radius: 50%; }
+
+/* band under the pin: plus, menu, close */
+.sticky-band {
+  position: absolute; left: 0; right: 0; top: 24px; z-index: 3; display: flex; align-items: center; gap: 2px; padding: 2px 6px;
+  opacity: 0; transition: opacity 0.15s ease; cursor: grab;
+}
+.sticky:hover .sticky-band, .sticky:focus-within .sticky-band { opacity: 1; }
+.sticky[data-pinned="1"] .sticky-band { cursor: default; }
+.sticky-band button, .sticky-tools button { display: inline-grid; place-items: center; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 6px; background: transparent; color: var(--ink); cursor: pointer; opacity: 0.75; }
+.sticky-band button:hover, .sticky-tools button:hover { opacity: 1; background: color-mix(in srgb, var(--ink) 12%, transparent); }
+.sticky-band button svg { width: 14px; height: 14px; }
+.sticky-spacer { flex: 1; }
+.sticky[data-pinned="1"] .sticky-band .sticky-add, .sticky[data-pinned="1"] .sticky-band .sticky-close { display: none; }
+/* In front or behind: one button, two icons, the pressed state says which */
+.sticky-front[hidden] { display: none; }
+.sticky-front .ic-behind, .sticky-front[aria-pressed="false"] .ic-front { display: none; }
+.sticky-front[aria-pressed="false"] .ic-behind { display: block; }
+.sticky-front[aria-pressed="true"] { background: color-mix(in srgb, var(--ink) 14%, transparent); }
+
+/* toolbar under the paper */
+.sticky-tools {
+  position: absolute; left: 0; right: 0; top: calc(22px + var(--h)); z-index: 5; margin-top: 4px; padding: 4px 6px; border-radius: 10px; width: 100%; min-width: 100%; box-sizing: border-box;
+  background: color-mix(in srgb, var(--paper) 92%, black); color: var(--ink); font-family: var(--font-body); font-size: 12px;
+  opacity: 0; pointer-events: none; transform: translateY(-4px); transition: opacity 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 8px 18px -8px rgba(0, 0, 0, 0.45);
+}
+.sticky:focus-within .sticky-tools, .sticky[data-pen="1"] .sticky-tools { opacity: 1; pointer-events: auto; transform: none; }
+/* pen row */
+.sticky-penrow { display: flex; align-items: center; gap: 3px; padding: 4px 2px 2px; border-top: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); margin-top: 4px; }
+.sticky-penrow[hidden] { display: none; }
+.sticky-penrow .pcolor { width: 18px; height: 18px; border-radius: 50%; background: var(--pc); border: 2px solid transparent; opacity: 1; }
+.sticky-penrow .pcolor.active { border-color: var(--ink); box-shadow: 0 0 0 1.5px var(--card); }
+.sticky-penrow .cbtn { width: 22px; height: 20px; }
+.sticky-penrow .pwidth i { display: block; width: 14px; height: var(--pw); border-radius: 999px; background: var(--ink); }
+.sticky-penrow .pwidth.active { background: color-mix(in srgb, var(--ink) 18%, transparent); opacity: 1; }
+.sticky-penrow svg { width: 15px; height: 15px; }
+.sticky[data-pinned="1"] .sticky-tools { display: none; }
+/* the toolbar is three small groups with a hairline between them: text style, lists, draw and style */
+.sticky-row { display: flex; align-items: center; justify-content: flex-start; gap: 6px; }
+.sticky-row .tgroup { display: inline-flex; align-items: center; gap: 1px; }
+.sticky-row .tgroup + .tgroup { padding-left: 6px; border-left: 1px solid var(--ui-line); }
+.sticky-row .sticky-spacer { flex: 1 1 auto; min-width: 2px; }
+.sticky-row .act-group { padding-left: 0; border-left: 0; }
+.sticky-row .aa-group, .sticky-row .sticky-dots { display: none; }
+.sticky-row .sticky-aa { font: 800 12px var(--font-body); width: 26px; }
+/* Direction A: formatting folds into the Aa menu on narrow notes; style and hotkeys go under the dots on the narrowest */
+@container (max-width: 339px) { .sticky-row .fmt-group { display: none; } .sticky-row .aa-group { display: inline-flex; } }
+@container (max-width: 219px) { .sticky-row .sticky-styleBtn, .sticky-row .sticky-keys, .sticky-row .sticky-plan { display: none; } .sticky-row .sticky-dots { display: inline-grid; } }
+.sticky-aa-pop, .sticky-dots-pop, .sticky-keys-pop { margin-top: 4px; padding: 4px 2px 2px; border-top: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); }
+.sticky-aa-pop[hidden], .sticky-dots-pop[hidden], .sticky-keys-pop[hidden] { display: none; }
+.sticky-aa-pop { display: flex; gap: 8px; align-items: center; }
+.sticky-aa-pop .tgroup + .tgroup { padding-left: 8px; border-left: 1px solid var(--ui-line); }
+.sticky-dots-pop { display: flex; gap: 6px; }
+.sticky-tools .sticky-dots-pop button { display: inline-flex; align-items: center; gap: 6px; width: auto; height: 24px; padding: 0 8px; font: 600 12px var(--font-body); }
+.sticky-tools .sticky-dots-pop button svg { width: 14px; height: 14px; }
+.sticky-keys-pop { font: 500 11.5px var(--font-body); color: var(--ink); }
+.sticky-keys-pop .keys-title { font-weight: 800; margin: 4px 0 2px; }
+.sticky-keys-pop .keys-row { display: flex; justify-content: space-between; gap: 10px; padding: 1px 0; }
+.sticky-keys-pop kbd { font: 600 11px var(--font-mono); background: color-mix(in srgb, var(--ink) 10%, transparent); border-radius: 4px; padding: 1px 5px; white-space: nowrap; }
+.sticky-tools .sticky-keys-pop .keys-settings { margin-top: 6px; width: auto; height: 24px; padding: 0 10px; font: 600 12px var(--font-body); }
+/* The highlighter's marks */
+.sticky-body mark { background: color-mix(in srgb, #ffe600 62%, transparent); color: #1f1a00; text-shadow: none; border-radius: 2px; padding: 0 1px; box-decoration-break: clone; }
+/* Links: the note's ink, underlined; a click shows the card below the link */
+.sticky-body a { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 2px; text-decoration-color: color-mix(in srgb, var(--ink) 60%, transparent); cursor: pointer; font-weight: 600; }
+.sticky-body a:hover { text-decoration-color: var(--ink); }
+.sticky-linkpop { position: absolute; z-index: 6; display: flex; align-items: center; gap: 6px; max-width: 230px; padding: 5px 8px; border-radius: 8px; background: var(--ui-bg, #fff); color: var(--ui-text, #222); border: 1px solid var(--ui-line, #ccc); box-shadow: 0 6px 18px -6px rgba(0, 0, 0, 0.4); font: 500 11.5px var(--font-body); }
+.sticky-linkpop[hidden] { display: none; }
+.sticky-linkpop .lp-url { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sticky-linkpop button { flex: 0 0 auto; height: 22px; padding: 0 8px; border: 0; border-radius: 5px; background: color-mix(in srgb, var(--ui-text, #222) 10%, transparent); color: inherit; font: 600 11px var(--font-body); cursor: pointer; }
+.sticky-linkpop button:hover { background: color-mix(in srgb, var(--ui-accent, #58c4dc) 30%, transparent); }
+/* Recording, while the microphone or its hotkey is held */
+.sticky-rec { position: absolute; top: 6px; right: 12px; z-index: 3; display: inline-flex; align-items: center; gap: 5px; font: 800 10px var(--font-body); letter-spacing: 0.06em; color: #f04545; background: color-mix(in srgb, #f04545 14%, transparent); border-radius: 999px; padding: 2px 8px; pointer-events: none; }
+.sticky-rec[hidden] { display: none; }
+.sticky-rec i { width: 7px; height: 7px; border-radius: 50%; background: #f04545; animation: tp-rec 1s ease-in-out infinite; }
+@keyframes tp-rec { 50% { transform: scale(0.55); } }
+.sticky-tools .sticky-row button { width: 22px; height: 22px; border-radius: 5px; }
+/* the drawer needs room for its form; the bar alone stays as wide as the note */
+.sticky-tools:has(.sticky-style:not([hidden])) { min-width: max(100%, 250px); }
+.sticky-tools .fmt { font-family: Georgia, serif; font-size: 13px; }
+/* the list button shows what a press will do next: dots, then numbers */
+.sticky-tools .fmt[data-list="ul"] svg, .sticky-tools .fmt[data-list="ol"] svg { display: none; }
+.sticky-tools .fmt[data-list="ul"]::after { content: "1."; font-family: var(--font-body); font-size: 11px; font-weight: 800; }
+.sticky-tools .fmt[data-list="ol"]::after { content: ""; width: 11px; height: 11px; border: 1.5px solid currentColor; border-radius: 3px; box-sizing: border-box; }
+.sticky-body ol { list-style: decimal; }
+/* checklist: a box drawn on each item; a done item is dimmed and struck */
+.sticky-body ul.chk { list-style: none; padding-left: 0.2em; }
+.sticky-body ul.chk > li { position: relative; padding-left: 1.6em; min-height: 1.2em; }
+.sticky-body ul.chk > li::before { content: ""; position: absolute; left: 0.15em; top: 0.2em; width: 0.9em; height: 0.9em; border: 1.5px solid currentColor; border-radius: 3px; box-sizing: border-box; cursor: pointer; }
+.sticky-body ul.chk > li[data-done="1"]::before { background: currentColor; }
+.sticky-body ul.chk > li[data-done="1"]::after { content: ""; position: absolute; left: 0.45em; top: 0.3em; width: 0.28em; height: 0.5em; border: solid var(--paper); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.sticky-body ul.chk > li[data-done="1"] { opacity: 0.6; text-decoration: line-through; }
+.sticky-tools .fmt svg, .sticky-tools .sticky-pen svg, .sticky-tools .sticky-styleBtn svg { width: 15px; height: 15px; }
+.sticky-tools button[aria-pressed="true"], .sticky-tools button[aria-expanded="true"] { background: color-mix(in srgb, var(--ink) 18%, transparent); opacity: 1; }
+.sticky-mic[hidden] { display: none; }
+.sticky-mic.listening { color: #f04545; background: color-mix(in srgb, #f04545 18%, transparent); animation: tp-listen 1.4s ease-in-out infinite; }
+.sticky-mic.busy { color: #b8860b; background: color-mix(in srgb, #e6b94c 28%, transparent); animation: tp-busy 0.9s linear infinite; }
+@keyframes tp-busy { 50% { box-shadow: 0 0 0 3px color-mix(in srgb, #e6b94c 55%, transparent); } }
+@keyframes tp-listen { 50% { box-shadow: 0 0 0 4px color-mix(in srgb, #f04545 45%, transparent); } }
+/* the style drawer is a form: a fixed label column, one setting per row, controls fill the row */
+.sticky-style { display: grid; gap: 9px; padding: 10px 4px 6px; border-top: 1px solid var(--ui-line); margin-top: 4px; }
+.sticky-srow { display: grid; grid-template-columns: 70px minmax(0, 1fr); align-items: center; gap: 8px; min-height: 22px; }
+.sticky-srow label { display: inline-flex; align-items: center; gap: 5px; }
+.sticky-slabel { font-size: 12px; font-weight: 700; color: var(--ui-muted); white-space: nowrap; }
+.sticky-slabel input[type="checkbox"] { margin: 0; }
+.sticky-style select { font: inherit; font-size: 12px; padding: 3px 6px; border-radius: 6px; border: 1px solid var(--ui-line); background: var(--ui-card); color: var(--ui-text); width: 100%; max-width: none; }
+.scolors { display: flex; align-items: center; gap: 14px; font-size: 12px; }
+.sglowrow { display: flex; align-items: center; gap: 8px; }
+.sglowrow input[type="range"] { flex: 1; min-width: 60px; }
+.sticky-tools .cpop { grid-column: 1 / -1; }
+/* color buttons and the chooser they open (js/color-pop.js) */
+.sticky-tools .cbtn { width: 26px; height: 22px; padding: 2px; border: 1px solid var(--ui-line); border-radius: 6px; background: var(--ui-card); cursor: pointer; opacity: 1; }
+.sticky-tools .cbtn i { display: block; width: 100%; height: 100%; border-radius: 4px; background: var(--cv); }
+.sticky-tools .cbtn[aria-expanded="true"] { outline: 2px solid var(--ui-accent); outline-offset: 1px; }
+.cpop { display: grid; gap: 6px; padding: 8px; margin: 2px 0; border-radius: 8px; background: var(--ui-input); border: 1px solid var(--ui-line); }
+.cpop[hidden] { display: none; }
+.cpop-sw { display: flex; flex-wrap: wrap; gap: 5px; }
+.sticky-tools .cpop .sw { width: 20px; height: 20px; padding: 0; border-radius: 50%; border: 1px solid rgba(0, 0, 0, 0.22); background: var(--cv); opacity: 1; }
+.sticky-tools .cpop .sw.active { outline: 2px solid var(--ui-accent); outline-offset: 1px; }
+.sticky-tools .cpop .sw-rainbow { background: conic-gradient(red, yellow, lime, cyan, blue, magenta, red); }
+/* Rainbow: the note's hue walks the wheel; --tp-hue is registered in app.css */
+.sticky[data-rgb="1"] { animation: tp-hue 9s linear infinite; }
+.cpop-row { display: flex; align-items: center; gap: 6px; }
+.cpop-row label { display: inline-flex; align-items: center; gap: 4px; }
+.cpop input.hex { width: 78px; font: inherit; font-family: var(--font-mono); font-size: 12px; padding: 3px 6px; border: 1px solid var(--ui-line); border-radius: 6px; background: var(--ui-card); color: var(--ui-text); }
+.cpop input.hex.bad { border-color: var(--ui-danger); }
+.sticky-tools .cpop .cpop-more, .sticky-tools .cpop .cpop-close { width: auto; height: 22px; padding: 0 8px; border-radius: 6px; background: var(--ui-card); border: 1px solid var(--ui-line); font: inherit; font-size: 11.5px; font-weight: 700; opacity: 1; }
+.sticky-tools .cpop .cpop-close { margin-left: auto; }
+.cpop-native { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.sticky-style input[type="range"] { width: 100%; margin: 0; accent-color: var(--ui-accent); }
+.sticky-style input[type="checkbox"] { accent-color: var(--ui-accent); }
+.stepper { display: inline-flex; align-items: center; gap: 6px; }
+.stepper .ssize { min-width: 22px; text-align: center; font-weight: 700; }
+.stepper button { width: 20px; height: 20px; }
+.preset-grid { display: flex; flex-wrap: wrap; gap: 4px; }
+.sticky-tools .preset, .preset { position: relative; width: 22px; height: 22px; padding: 0; border-radius: 50%; border: 1px solid rgba(0, 0, 0, 0.22); background: var(--pp); cursor: pointer; opacity: 1; }
+.preset::after { content: ""; position: absolute; inset: 6px; border-radius: 50%; background: var(--pt); }
+.preset.glows { box-shadow: 0 0 0 2px var(--pg), 0 0 7px var(--pg); }
+.preset.active { outline: 2px solid var(--ui-accent); outline-offset: 2px; }
+.sticky-hint { margin: 2px 0 0; font-size: 11.5px; color: var(--ui-accent); font-weight: 700; }
+.sticky-hint[hidden] { display: none; }
+
+/* resize grip, just above the curl */
+.sticky-grip {
+  position: absolute; right: 2px; bottom: calc(var(--curl) + 2px); z-index: 4; width: 16px; height: 16px; cursor: nwse-resize; opacity: 0;
+  background: repeating-linear-gradient(135deg, transparent 0 3px, color-mix(in srgb, var(--ink) 45%, transparent) 3px 4.5px);
+  border-radius: 3px; transition: opacity 0.15s ease;
+}
+.sticky:hover .sticky-grip, .sticky:focus-within .sticky-grip { opacity: 0.8; }
+.sticky[data-pinned="1"] .sticky-grip { display: none; }
+
+/* 3 dot menu */
+.sticky-menu {
+  position: absolute; right: 6px; top: 50px; z-index: 6; min-width: 130px; display: grid; padding: 4px; border-radius: 10px;
+  background: var(--card); color: var(--text); box-shadow: var(--card-outline), 0 10px 24px -8px rgba(0, 0, 0, 0.5); font-family: var(--font-body); font-size: 13px;
+}
+.sticky-menu[hidden] { display: none; }
+.sticky-menu.left { left: 6px; right: auto; }
+.sticky-menu button { width: 100%; height: auto; padding: 7px 10px; text-align: left; border: 0; border-radius: 6px; background: transparent; color: inherit; font: inherit; cursor: pointer; display: block; }
+.sticky-menu button:hover { background: color-mix(in srgb, var(--accent) 16%, transparent); }
+.sticky-menu button.danger { color: var(--danger); }
+
+
+/* ===== All notes list ===== */
+.nl-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.nl-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; background: var(--ui-input); }
+.nl-thumb { position: relative; flex: 0 0 auto; width: 40px; height: 36px; border-radius: 3px 3px 0 3px; background: var(--paper); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25); }
+.nl-thumb .nl-pin { position: absolute; left: 50%; top: -5px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ff8a8a, #b71414); }
+.nl-main { flex: 1; min-width: 0; display: grid; gap: 3px; }
+.nl-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13.5px; font-weight: 700; color: var(--ui-text); }
+.nl-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-size: 11.5px; color: var(--ui-muted); }
+.nl-meta .tag { padding: 1px 7px; border-radius: 999px; background: var(--ui-input-2); color: var(--ui-muted); font-style: normal; font-size: 10px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+.nl-meta .tag.open { background: color-mix(in srgb, var(--ui-ok) 16%, transparent); color: var(--ui-ok); }
+.nl-meta .tag.unsaved { background: color-mix(in srgb, var(--ui-danger) 12%, transparent); color: var(--ui-danger); }
+.nl-acts { display: flex; gap: 4px; flex: 0 0 auto; }
+.nl-btn { display: inline-grid; place-items: center; width: 28px; height: 28px; padding: 0; border-radius: 8px; border: 1px solid var(--ui-line); background: var(--ui-card); color: var(--ui-text); cursor: pointer; }
+.nl-btn svg { width: 14px; height: 14px; }
+.nl-btn:hover { border-color: var(--ui-accent); color: var(--ui-accent); }
+.nl-btn.on { background: var(--ui-accent); border-color: var(--ui-accent); color: #ffffff; }
+.nl-btn.danger { color: var(--ui-danger); }
+.nl-btn.danger:hover { border-color: var(--ui-danger); background: color-mix(in srgb, var(--ui-danger) 8%, transparent); }
+.nl-gone { margin-top: 12px; }
+.nl-gone summary { cursor: pointer; list-style: none; margin: 0 0 6px; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ui-muted); }
+.nl-gone summary::before { content: "\25B8"; display: inline-block; width: 14px; }
+.nl-gone[open] summary::before { content: "\25BE"; }
+
+/* ===== note window (desktop widget) ===== */
+:root[data-note="1"], :root[data-note="1"] body { background: transparent !important; margin: 0; overflow: hidden; }
+:root[data-note="1"] .bg-layer { display: none !important; }
+.note-stage { position: relative; padding: 30px 24px 24px; width: max-content; }
+.note-stage .sticky { --rot: 0deg; }
+/* In a note window the toolbar also stays up while the cursor is over the note, so it can be reached from the paper. */
+/* In a note window the toolbar stays up the whole time the note is unpinned; it only goes with the pin. */
+:root[data-note="1"] .sticky:not([data-pinned="1"]):is(:hover, :focus-within) .sticky-tools, :root[data-note="1"] .sticky.has-fan:not([data-pinned="1"]) .sticky-tools { opacity: 1; pointer-events: auto; transform: none; }
+:root[data-note="1"] .sticky[data-pinned="1"]:hover .sticky-tools { display: none; }
+.note-listpop {
+  position: fixed; left: 24px; top: 40px; width: 380px; max-width: calc(100vw - 48px); max-height: 520px; overflow: auto; z-index: 20;
+  background: var(--card); color: var(--text); border-radius: var(--panel-radius, 14px); box-shadow: var(--card-outline), 0 16px 30px -10px rgba(0, 0, 0, 0.5);
+}
+.note-listpop[hidden] { display: none; }
+.note-listpop .panel-head { position: sticky; top: 0; background: var(--card); }
+.note-listpop .modal-body { padding: 8px 12px 12px; }
+:root[data-note="1"].dragging { cursor: grabbing; }
+
+/* ===== save state ===== */
+.sticky-band .sticky-save { display: none; width: auto; height: 22px; padding: 0 8px 0 6px; gap: 4px; border-radius: 999px; background: var(--ui-text); color: var(--ui-card); opacity: 1; font-family: var(--font-body); font-size: 11px; font-weight: 800; }
+.sticky-band .sticky-save svg { width: 12px; height: 12px; }
+.sticky[data-dirty="1"] .sticky-band .sticky-save { display: inline-flex; align-items: center; }
+.sticky.just-saved .sticky-band::after { content: "Saved"; font-family: var(--font-body); font-size: 11px; color: var(--ink); opacity: 0.7; margin-left: 6px; }
+.sticky-ask {
+  position: absolute; inset: 0; z-index: 8; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; text-align: center;
+  background: color-mix(in srgb, var(--paper) 88%, black); color: var(--ink); font-family: var(--font-body);
+}
+.sticky-ask[hidden] { display: none; }
+.sticky-ask p { margin: 0 0 10px; font-size: 15px; font-weight: 800; }
+.sticky-ask button { min-width: 64px; margin: 0 5px; padding: 7px 14px; border-radius: 999px; border: 0; font: inherit; font-weight: 800; cursor: pointer; }
+.sticky-ask .ask-yes { background: var(--accent); color: var(--card); }
+.sticky-ask .ask-no { background: color-mix(in srgb, var(--ink) 15%, transparent); color: var(--ink); }
+
+/* ===== redesign: look 2, soft curled paper with depth ===== */
+.sticky { --curl: 40px; }
+.sticky:hover, .sticky:focus-within { --curl: 46px; }
+.sticky-paper {
+  background-image:
+    radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, white 10%, transparent), transparent 60%),
+    linear-gradient(180deg, transparent 70%, color-mix(in srgb, black 6%, transparent)),
+    linear-gradient(90deg, color-mix(in srgb, black 3%, transparent), transparent 8%, transparent 92%, color-mix(in srgb, black 3%, transparent));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 35%, transparent);
+}
+.sticky::before { background: rgba(0, 0, 0, 0.36); filter: blur(11px); top: 32px; }
+/* the fold: bigger, higher contrast, and it is the resize handle */
+.sticky-curl {
+  background: linear-gradient(315deg, transparent 46%, color-mix(in srgb, var(--paper) 52%, black) 49%, color-mix(in srgb, var(--paper) 72%, black) 56%, color-mix(in srgb, var(--paper) 60%, white) 100%);
+  box-shadow: -5px -5px 10px rgba(0, 0, 0, 0.34);
+  border-top-left-radius: 0 0; border-bottom-right-radius: 0;
+}
+.sticky-grip {
+  right: 0; bottom: 0; width: var(--curl); height: var(--curl); border-radius: 0; opacity: 0.55;
+  background: repeating-linear-gradient(135deg, transparent 0 4px, color-mix(in srgb, var(--ink) 55%, transparent) 4px 5.5px);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%, 14% 86%, 86% 14%);
+  -webkit-mask: linear-gradient(315deg, transparent 50%, #000 52%); mask: linear-gradient(315deg, transparent 50%, #000 52%);
+}
+.sticky:hover .sticky-grip, .sticky:focus-within .sticky-grip, .sticky.resizing .sticky-grip { opacity: 0.95; }
+.sticky.resizing .sticky-paper { outline: 1.5px dashed color-mix(in srgb, var(--ink) 45%, transparent); outline-offset: 3px; }
+/* pinned: the fold is gone, the corner lies flat */
+.sticky[data-pinned="1"], .sticky[data-pinned="1"]:hover { --curl: 0px; }
+.sticky[data-pinned="1"] .sticky-curl { display: none; }
+
+/* pin press and settle, and the lift when it comes out */
+.sticky.pin-press .sticky-paper { animation: tp-pin-settle 0.6s cubic-bezier(.3, .7, .3, 1) both; }
+.sticky.pin-press .sticky-pin { animation: tp-pin-push 0.45s ease both; }
+.sticky.pin-lift .sticky-paper { animation: tp-pin-lift 0.5s ease both; }
+@keyframes tp-pin-settle { 0% { transform: translateY(-3px) scale(1.01); } 45% { transform: translateY(1.5px) scale(0.995); } 100% { transform: none; } }
+@keyframes tp-pin-push { 0% { transform: translateY(-4px) scale(1.12); } 60% { transform: translateY(1px) scale(0.96); } 100% { transform: none; } }
+@keyframes tp-pin-lift { 0% { transform: none; } 50% { transform: translateY(-3px) scale(1.01); } 100% { transform: none; } }
+
+/* the tip a pinned note gives when something tries to change it */
+.sticky-pintip {
+  position: absolute; left: calc(50% - 64px); top: calc(22px + var(--h) - 40px); z-index: 12; width: 128px; box-sizing: border-box;
+  padding: 5px 10px; border-radius: 999px; background: #3b2a20; color: #fff7e6; font: 700 11px var(--font-body); text-align: center;
+  box-shadow: 0 6px 14px -6px rgba(0, 0, 0, 0.6); opacity: 0; transform: translateY(4px); pointer-events: none; transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.sticky-pintip.show { opacity: 1; transform: none; }
+.sticky[data-pinned="1"] .sticky-paper { cursor: default; }
+
+/* ===== the brass crown under the note and its half ring of tools (note windows) ===== */
+.sticky.has-fan .sticky-tools {
+  display: block; background: transparent; box-shadow: none; padding: 0; margin-top: 6px; opacity: 1; transform: none; pointer-events: none;
+}
+.sticky.has-fan .sticky-tools > * { pointer-events: auto; }
+.sticky.has-fan .sticky-row { display: block; position: relative; height: 0; overflow: visible; }
+.sticky.has-fan.fan-open .sticky-row { height: var(--ring-h, 130px); }
+.sticky.has-fan .sticky-row > .tgroup, .sticky.has-fan .sticky-row > .sticky-spacer { display: none !important; }
+.sticky-ring { position: absolute; left: 0; right: 0; top: 0; height: 0; }
+.sticky.has-fan:not(.fan-open) .sticky-ring { visibility: hidden; }
+.fan-group {
+  position: absolute; transform: translate(-50%, 0); display: inline-flex; align-items: center; gap: 1px; padding: 3px 5px 14px; border-radius: 14px;
+  background: color-mix(in srgb, var(--paper) 90%, white); box-shadow: 0 1px 0 color-mix(in srgb, white 60%, transparent) inset, 0 6px 14px -6px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+}
+.fan-group[hidden] { display: none; }
+.fan-group .fan-label { position: absolute; left: 0; right: 0; bottom: 2px; text-align: center; font: 800 8.5px var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; font-style: normal; color: color-mix(in srgb, var(--ink) 70%, transparent); pointer-events: none; }
+.fan-group .sticky-dots { display: inline-grid !important; }
+.fan-group .sticky-styleBtn, .fan-group .sticky-keys, .fan-group .sticky-plan { display: inline-grid !important; }
+.fan-group .sticky-mic[hidden] { display: none !important; }
+.sticky.fan-bloom .fan-group { animation: tp-fan-in 0.32s cubic-bezier(.2, .8, .3, 1.2) both; }
+.sticky.fan-bloom .fan-group:nth-child(2) { animation-delay: 0.03s; } .sticky.fan-bloom .fan-group:nth-child(3) { animation-delay: 0.06s; }
+.sticky.fan-bloom .fan-group:nth-child(4) { animation-delay: 0.09s; } .sticky.fan-bloom .fan-group:nth-child(5) { animation-delay: 0.12s; }
+.sticky.fan-bloom .fan-group:nth-child(6) { animation-delay: 0.15s; }
+@keyframes tp-fan-in { from { opacity: 0; transform: translate(-50%, -24px) scale(0.6); } }
+.sticky-crown {
+  display: block !important; position: relative; width: 26px !important; height: 26px !important; margin: 0 auto; border-radius: 50% !important; padding: 0;
+  background: radial-gradient(circle at 35% 30%, #fff3c4, #d9a74a 45%, #8a6424) !important; opacity: 0.85 !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.45), inset 0 -1px 2px rgba(0, 0, 0, 0.3); transition: opacity 0.2s ease, transform 0.15s ease, filter 0.3s ease;
+}
+.sticky-crown .cr-knurl { position: absolute; inset: 3px; border-radius: 50%; background: repeating-conic-gradient(from 0deg, rgba(60, 40, 10, 0.35) 0 6deg, transparent 6deg 15deg); }
+.sticky-crown .cr-lock { position: absolute; left: 8px; top: 8px; width: 10px; height: 10px; display: none; fill: #3b2a20; stroke: #3b2a20; }
+.sticky-crown:hover, .sticky-crown:focus-visible { opacity: 1 !important; transform: scale(1.08); }
+.sticky.fan-open .sticky-crown { transform: rotate(30deg); }
+/* calm at rest: the crown is faint until the note is hovered or focused */
+.sticky.has-fan:not(:hover):not(:focus-within):not(.fan-open) .sticky-crown { opacity: 0.35 !important; }
+:root[data-note="1"] .sticky.has-fan:not(:hover):not(:focus-within) .sticky-ring, :root[data-note="1"] .sticky.has-fan:not(:hover):not(:focus-within) .sticky-penrow { opacity: 0; }
+.sticky.has-fan .sticky-ring, .sticky.has-fan .sticky-penrow { transition: opacity 0.2s ease; }
+/* pinned: the crown stays, grey and locked, and the tools are put away */
+.sticky.has-fan[data-pinned="1"] .sticky-tools { display: block; }
+.sticky.has-fan[data-pinned="1"] .sticky-tools > :not(.sticky-crown) { display: none !important; }
+.sticky.has-fan[data-pinned="1"] .sticky-crown { background: radial-gradient(circle at 35% 30%, #eeeeee, #a9a39a 50%, #6d675f) !important; opacity: 0.55 !important; transform: none; }
+.sticky.has-fan[data-pinned="1"] .sticky-crown .cr-knurl { display: none; }
+.sticky.has-fan[data-pinned="1"] .sticky-crown .cr-lock { display: block; }
+.sticky.pin-press.has-fan .sticky-crown { animation: tp-crown-lock 0.6s ease both; }
+@keyframes tp-crown-lock { 0% { filter: brightness(1.3); transform: scale(1.1); } 100% { filter: none; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .sticky.pin-press .sticky-paper, .sticky.pin-press .sticky-pin, .sticky.pin-lift .sticky-paper, .sticky.fan-bloom .fan-group, .sticky.pin-press.has-fan .sticky-crown { animation: none !important; }
+  .sticky-crown, .sticky-pintip, .sticky.has-fan .sticky-ring { transition: none !important; }
+}
+:root[data-note="1"] .sticky.has-fan[data-pinned="1"]:hover .sticky-tools { display: block; }
+
+/* ===== Style, Hotkeys and More as solid popovers beside the note (note windows) =====
+   Solid themed card in the Calm dial language: the theme's own surface, a hairline rim, a brass
+   tick on top, and a soft drop. notes.js places it on the side with room and caps its height. */
+.sticky.has-fan .sticky-tools:has(.sticky-style:not([hidden])) { min-width: 100%; }
+.sticky.has-fan .as-pop:not([hidden]) {
+  position: absolute; z-index: 8; box-sizing: border-box; margin: 0; overflow-y: auto; overscroll-behavior: contain;
+  padding: 12px 14px 12px; border-radius: 14px; border: 1px solid var(--ui-line);
+  background: var(--ui-bg); color: var(--ui-text); font: 500 12.5px var(--font-body);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ui-text) 6%, transparent), 0 18px 40px -14px rgba(0, 0, 0, 0.55), 0 4px 10px -4px rgba(0, 0, 0, 0.3);
+  scrollbar-width: thin;
+}
+.sticky.has-fan .as-pop:not([hidden])::before {
+  content: ""; display: block; height: 3px; width: 34px; margin: -6px auto 8px; border-radius: 2px;
+  background: linear-gradient(90deg, #b8893a, #f1d48a, #b8893a);
+}
+.sticky.has-fan .sticky-style.as-pop:not([hidden]) { border-top: 1px solid var(--ui-line); gap: 10px; align-content: start; }
+.sticky.has-fan .as-pop:not([hidden]) > .sticky-srow:first-of-type { margin-top: 0; }
+.sticky.has-fan .sticky-keys-pop.as-pop { color: var(--ui-text); }
+.sticky.has-fan .sticky-keys-pop.as-pop kbd { background: var(--ui-input); color: var(--ui-text); border: 1px solid var(--ui-line); }
+.sticky.has-fan .sticky-dots-pop.as-pop:not([hidden]) { display: grid; gap: 4px; }
+.sticky.has-fan .sticky-tools .sticky-dots-pop.as-pop button { width: 100%; justify-content: flex-start; height: 30px; color: var(--ui-text); opacity: 1; border-radius: 8px; }
+.sticky.has-fan .sticky-tools .sticky-dots-pop.as-pop button:hover { background: var(--ui-input); }
+.sticky.has-fan .sticky-tools .as-pop button { color: var(--ui-text); }
+/* The pen row under the ring: a solid strip too, so its swatches read over any desktop. */
+.sticky.has-fan .sticky-penrow { background: var(--ui-bg); color: var(--ui-text); border: 1px solid var(--ui-line); border-radius: 12px; padding: 4px 8px; box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.5); }
+/* No room under a low note: the crown, ring and pen row open above it instead (notes.js wireFan). */
+.sticky.has-fan.fan-up .sticky-tools { top: auto; bottom: calc(100% + 20px); margin-top: 0; display: flex; flex-direction: column-reverse; align-items: stretch; }
+.sticky.has-fan.fan-up .sticky-crown { align-self: center; }
+
+/* Note papers: little sheets with "Aa" in their ink, light ones first, then dark. */
+.preset-grid { align-items: center; gap: 6px; }
+.preset-group { display: flex; flex-wrap: wrap; gap: 5px; }
+.preset-glabel { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ui-muted); margin-left: 4px; }
+.sticky-tools .preset, .preset { width: 28px; height: 24px; border-radius: 3px 3px 8px 3px; border: 1px solid rgba(0, 0, 0, 0.18); box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.14); color: var(--pt); font: 700 11px Georgia, serif; line-height: 1; display: inline-grid; place-items: center; }
+.preset::after { content: none; }
+.sticky-tools .preset.glows, .preset.glows { box-shadow: 0 0 0 2px var(--pg), 0 0 7px var(--pg); }

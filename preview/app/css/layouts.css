@@ -1,0 +1,586 @@
+/* TimePeace layouts. All of them restyle the same .clock rows built by js/app.js.
+   Row parts: .city (.pin), .meta (.country .diff .day), .time (.sec .ampm), .mil (.chip), .date, .bar (i).
+   Base grid areas and the Cards and Slim layouts live in app.css. */
+
+/* Shared: compact "time only" layouts hide the details until a row is tapped */
+:root[data-layout="dial"] .clock:not(.local):not(.expanded) .meta,
+:root[data-layout="type"] .clock:not(.expanded) .meta,
+:root[data-layout="dial"] .clock:not(.local):not(.expanded) .date,
+:root[data-layout="type"] .clock:not(.expanded) .date,
+:root[data-layout="dial"] .clock:not(.local) .mil,
+:root[data-layout="type"] .clock .mil { display: none; }
+/* Flex column layouts: the base grid gives .city and .meta align-self values that would push them sideways here */
+:root[data-layout="dial"] .clock.local .city,
+:root[data-layout="dial"] .clock.local .meta,
+:root[data-layout="split"] .clock.local .city,
+:root[data-layout="split"] .clock.local .meta { align-self: center; }
+.clock.expanded { z-index: 5; }
+.clock .bar { display: none; grid-area: bar; }
+.clock .time .sec { display: inline; }
+:root[data-layout="dial"] .clock:not(.local) .time .sec { display: none; }
+
+/* 4. Soft sheet: one rounded card, hairline rows, accent bar marks the local row */
+:root[data-layout="sheet"] .clocks {
+  gap: 0; background: color-mix(in srgb, var(--card) calc(var(--card-alpha) * 100%), transparent);
+  box-shadow: var(--card-outline); border-radius: 28px; padding: 6px 18px 8px;
+}
+:root[data-layout="sheet"] .clock {
+  background: transparent; box-shadow: none; border-radius: 0; padding: 10px 4px; border-bottom: 1px solid var(--line);
+  grid-template-columns: 1fr auto auto; grid-template-areas: "city mil time" "meta mil date"; column-gap: 12px;
+}
+:root[data-layout="sheet"] .clock:last-child { border-bottom: 0; }
+:root[data-layout="sheet"] .clock.local { box-shadow: inset 3px 0 0 var(--accent); padding-left: 12px; }
+:root[data-layout="sheet"] .clock .time { font-size: 22px; }
+:root[data-layout="sheet"] .clock .city { font-size: 14.5px; }
+:root[data-layout="sheet"] .clock .meta { font-size: 11.5px; }
+:root[data-layout="sheet"] .clock .date { font-size: 11px; margin-top: 2px; }
+:root[data-layout="sheet"] .clock .chip { font-size: 11px; padding: 3px 8px; }
+
+/* 13. Daylight bars: a day band per city with a dot where their day is */
+:root[data-layout="daylight"] .clocks {
+  gap: 0; background: color-mix(in srgb, var(--card) calc(var(--card-alpha) * 100%), transparent); box-shadow: var(--card-outline); border-radius: 22px; padding: 8px 16px;
+}
+:root[data-layout="daylight"] .clock {
+  background: transparent; box-shadow: none; border-radius: 0; padding: 6px 2px 8px; border-bottom: 1px solid var(--line);
+  grid-template-columns: 1fr auto auto; grid-template-areas: "city city time" "bar bar bar" "meta mil date"; column-gap: 10px; row-gap: 3px;
+}
+:root[data-layout="daylight"] .clock:last-child { border-bottom: 0; }
+:root[data-layout="daylight"] .clock .bar {
+  display: block; height: 8px; border-radius: 4px; position: relative; margin: 2px 0;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--muted) 30%, transparent) 0 25%, color-mix(in srgb, var(--secondary) 55%, transparent) 25% 75%, color-mix(in srgb, var(--muted) 30%, transparent) 75%);
+}
+:root[data-layout="daylight"] .clock .bar i {
+  position: absolute; top: -3px; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 2px var(--card);
+  left: calc(var(--hour, 12) / 24 * 100% - 7px);
+}
+:root[data-layout="daylight"] .clock .time { font-size: 19px; }
+:root[data-layout="daylight"] .clock .city { font-size: 13.5px; }
+:root[data-layout="daylight"] .clock .meta { font-size: 10.5px; }
+:root[data-layout="daylight"] .clock .date { font-size: 10.5px; }
+:root[data-layout="daylight"] .clock .chip { font-size: 10px; padding: 2px 7px; }
+
+/* 9. Split panel: local time on a tinted left panel, the rest listed beside it */
+:root[data-layout="split"] .clocks {
+  display: grid; grid-template-columns: 124px 1fr; gap: 0 12px; background: color-mix(in srgb, var(--card) calc(var(--card-alpha) * 100%), transparent);
+  box-shadow: var(--card-outline); border-radius: 28px; overflow: hidden; align-items: center; padding-right: 12px;
+}
+:root[data-layout="split"] .clock { background: transparent; box-shadow: none; border-radius: 0; }
+:root[data-layout="split"] .clock:not(.local) { padding: 8px 4px; border-bottom: 1px solid var(--line); grid-template-columns: 1fr auto auto; grid-template-areas: "city mil time" "meta mil date"; column-gap: 8px; }
+:root[data-layout="split"] .clock:not(.local):last-child { border-bottom: 0; }
+:root[data-layout="split"] .clock:not(.local) .time { font-size: 18px; }
+:root[data-layout="split"] .clock:not(.local) .city { font-size: 13.5px; }
+:root[data-layout="split"] .clock:not(.local) .meta { font-size: 10.5px; }
+:root[data-layout="split"] .clock:not(.local) .chip { font-size: 10px; padding: 2px 7px; }
+:root[data-layout="split"] .clock.local {
+  grid-column: 1; grid-row: 1 / span 40; align-self: stretch; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+  background: color-mix(in srgb, var(--accent) 22%, var(--card)); padding: 16px 10px; gap: 4px; --muted: var(--muted-tint, var(--text));   /* the theme's muted ink tuned for this tinted panel */
+}
+:root[data-layout="split"] .clock.local .time { font-size: 30px; text-align: center; }
+:root[data-layout="split"] .clock.local .meta { justify-content: center; font-size: 10.5px; }
+:root[data-layout="split"] .clock.local .date, :root[data-layout="split"] .clock.local .mil { text-align: center; margin: 2px 0 0; }
+
+/* 3. Dial: local time as a clock face using the mark ring, other cities as chips */
+:root[data-layout="dial"] .clocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 8px; }
+:root[data-layout="dial"] .clock.local {
+  grid-column: 1 / -1; justify-self: center; width: 190px; height: 190px; border-radius: 50%; padding: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 2px;
+  box-shadow: var(--hero-outline), 0 0 0 10px color-mix(in srgb, var(--accent) 12%, transparent);
+  position: relative; margin: 10px auto 12px;
+}
+:root[data-layout="dial"] .clock.local::before, :root[data-layout="dial"] .clock.local::after {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 3px; background: var(--accent); border-radius: 2px; transform-origin: 50% 100%;
+}
+:root[data-layout="dial"] .clock.local::before { height: 60px; margin-left: -1.5px; margin-top: -60px; transform: rotate(calc(var(--hour, 0) * 30deg)); opacity: .5; }
+:root[data-layout="dial"] .clock.local::after { height: 78px; margin-left: -1.5px; margin-top: -78px; transform: rotate(calc(var(--minute, 0) * 6deg)); opacity: .35; background: var(--secondary); }
+:root[data-layout="dial"] .clock.local .time { font-size: 32px; text-align: center; }
+:root[data-layout="dial"] .clock.local .meta { justify-content: center; font-size: 10.5px; }
+:root[data-layout="dial"] .clock.local .date, :root[data-layout="dial"] .clock.local .mil { text-align: center; margin: 2px 0 0; }
+:root[data-layout="dial"] .clock:not(.local) { border-radius: 999px; padding: 8px 14px; grid-template-columns: 1fr auto; grid-template-areas: "city time" "meta date"; column-gap: 8px; }
+:root[data-layout="dial"] .clock:not(.local) .time { font-size: 16px; }
+:root[data-layout="dial"] .clock:not(.local) .city { font-size: 12.5px; }
+
+/* 14. Typographic: type straight on the ground, nothing else */
+:root[data-layout="type"] .clocks { gap: 2px; }
+:root[data-layout="type"] .clock {
+  background: transparent; box-shadow: none; border-radius: 0; padding: 4px 6px;
+  grid-template-columns: auto 1fr; grid-template-areas: "time city" "date meta"; column-gap: 12px; align-items: baseline;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+}
+:root[data-layout="type"] .clock .time { font-size: 30px; text-align: left; }
+:root[data-layout="type"] .clock.local .time { color: var(--accent-ink, var(--accent)); }
+:root[data-layout="type"] .clock .city { font-size: 15px; font-weight: 500; }
+:root[data-layout="type"] .clock .date { text-align: left; }
+:root[data-layout="type"] .clock .meta { align-self: start; }
+.clock .cc { display: none; grid-area: cc; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: var(--accent-ink, var(--accent)); }
+
+/* Layout picker grid in Settings */
+.layout-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.layout-tile {
+  border: 2px solid var(--line); border-radius: var(--input-radius); padding: 6px; cursor: pointer; background: transparent; color: var(--text);
+  font-family: inherit; display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.layout-tile.active { border-color: var(--accent); }
+.layout-tile svg { width: 48px; height: 34px; fill: currentColor; color: var(--muted); }
+.layout-tile.active svg { color: var(--accent); }
+.layout-tile .tile-name { font-size: 12.5px; font-weight: 750; text-align: center; line-height: 1.15; }
+
+/* Neon outline: boxless layouts keep their own row treatment instead of a glowing box per row */
+:root[data-neon="1"][data-layout="sheet"] .clock,
+:root[data-neon="1"][data-layout="daylight"] .clock,
+:root[data-neon="1"][data-layout="daylight"] .clock.local,
+:root[data-neon="1"][data-layout="split"] .clock,
+:root[data-neon="1"][data-layout="split"] .clock.local,
+:root[data-neon="1"][data-layout="type"] .clock,
+:root[data-neon="1"][data-layout="type"] .clock.local { border-right-color: var(--neon); }
+:root[data-neon="1"][data-layout="sheet"] .clock.local { box-shadow: inset 3px 0 0 var(--accent); }
+
+
+/* Locked view (desktop widget): the page paints a transparent ground, so only the clock shapes
+   and the rim controls remain over the desktop. The fade level (--card-alpha, live from the FADE
+   knob) is applied once, as opacity on the clock area, so every design fades the same way. --fade
+   is resolved at the root, so the clock area can set --card-alpha back to 1 for the row and disc
+   color mixes inside it without feeding its own opacity: Fade 50 is 50%, not 50% of 50%. */
+:root { --fade: var(--card-alpha); }
+:root[data-widget="1"].locked .clocks { opacity: var(--fade); --card-alpha: 1; }
+:root[data-widget="1"].locked body, :root[data-widget="1"].locked html { background: transparent !important; }
+:root[data-widget="1"].locked .app { background: transparent; }
+:root[data-widget="1"].locked .bg-layer { display: none !important; }
+:root[data-widget="1"].locked .clocks { background: transparent !important; box-shadow: none !important; border: 0 !important; padding: 0 !important; }
+:root[data-widget="1"].locked .toast { display: none; }
+/* Layouts whose rows borrow a box from the container become loose pills */
+:root[data-widget="1"].locked[data-layout="sheet"] .clocks,
+:root[data-widget="1"].locked[data-layout="daylight"] .clocks { display: flex; flex-direction: column; gap: 6px; margin: 0; }
+:root[data-widget="1"].locked[data-layout="split"] .clocks { overflow: visible; }
+:root[data-widget="1"].locked[data-layout="split"] .clock:not(.local) { border-bottom-color: transparent; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+:root[data-widget="1"].locked[data-layout="split"] .clock.local { border-radius: 24px; }
+:root[data-widget="1"].locked[data-layout="sheet"] .clock,
+:root[data-widget="1"].locked[data-layout="daylight"] .clock {
+  background: var(--card); box-shadow: var(--card-outline); border-radius: 999px; padding: 8px 18px; border-bottom: 0; margin: 0; display: grid;
+  grid-template-columns: 1fr auto auto; grid-template-areas: "city mil time" "meta mil date";
+}
+:root[data-widget="1"].locked[data-layout="daylight"] .clock { grid-template-areas: "city city time" "bar bar bar" "meta mil date"; }
+:root[data-widget="1"].locked[data-layout="sheet"] .clock.local,
+:root[data-widget="1"].locked[data-layout="daylight"] .clock.local { box-shadow: var(--hero-outline); padding-left: 18px; }
+:root[data-widget="1"].locked[data-layout="type"] .clock { text-shadow: 0 1px 3px rgba(0,0,0,0.7), 0 0 8px rgba(0,0,0,0.5); }
+
+
+/* ===== Watch shell: a disc with rim controls ===== */
+:root[data-shell="watch"] header.top, :root[data-shell="watch"] .frontbar, :root[data-shell="watch"] .tagline, :root[data-shell="watch"] footer.site { display: none !important; }
+:root[data-shell="watch"] .app { max-width: var(--app-width, 460px); }
+.watch { position: relative; margin: 8px auto 0; width: calc(100% - 48px); padding-right: 0; }
+.watch .disc {
+  position: relative; width: 100%; aspect-ratio: 1 / 1; border-radius: 50%;
+  background: color-mix(in srgb, var(--card) calc(var(--card-alpha) * 100%), transparent);
+  box-shadow: var(--card-outline);
+}
+:root[data-neon="1"] .watch .disc {
+  box-shadow: 0 0 0 1.5px var(--neon), 0 0 calc(var(--glow) * 0.3px + 1px) color-mix(in srgb, var(--neon) 70%, transparent), 0 0 calc(var(--glow) * 0.9px + 2px) color-mix(in srgb, var(--neon) 35%, transparent), 0 0 calc(var(--glow) * 2px + 4px) color-mix(in srgb, var(--neon) 14%, transparent), inset 0 0 calc(var(--glow) * 0.5px) color-mix(in srgb, var(--neon) 18%, transparent);
+}
+.watch .w-brand { position: absolute; left: 50%; top: 9%; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.watch .w-brand .mark { width: 26px; height: 26px; }
+.watch .w-brand .wordmark { font-size: 20px; }
+.watch .w-inner { position: absolute; inset: 0; }
+:root[data-layout="watch"] .watch .w-inner .clocks { position: absolute; inset: 0; display: block; gap: 0; }
+/* The rows' box is the square around the disc, and its corners lie over the Train, Settings and Notes pushers: it lets
+   clicks through, and only the rows themselves (and the empty state) take them. */
+:root[data-shell="watch"] .watch .w-inner, :root[data-shell="watch"] .watch .w-inner .clocks { pointer-events: none; }
+:root[data-shell="watch"] .watch .w-inner .clocks > * { pointer-events: auto; }
+/* Classic layouts sit in the part of the disc the circle actually contains, below the wordmark.
+   12% side inset keeps the top and bottom rows off the curved edge. Nothing is scaled down. */
+:root[data-shell="watch"]:not([data-layout="watch"]):not([data-anim="1"]) .watch .w-inner {
+  inset: auto; left: 12%; top: 18%; width: 76%; height: 68%;
+  container-type: size; container-name: face;
+}
+/* Split's time sits on the right, so the shared box's lower corners leave the circle. A narrower, shorter box keeps the last row inside. */
+:root[data-shell="watch"]:not([data-layout="watch"]):not([data-anim="1"])[data-layout="split"] .watch .w-inner {
+  left: 12%; top: 21%; width: 76%; height: 57%;
+}
+:root[data-shell="watch"]:not([data-layout="watch"]):not([data-anim="1"]) .watch .w-inner .clocks {
+  position: absolute; inset: 0; width: 100%; height: 100%; transform: none;
+  display: flex; flex-direction: column; justify-content: center; gap: 3px; min-height: 0;
+}
+/* the local row: large, upper half, no shape of its own while unlocked */
+:root[data-layout="watch"] .clock { position: absolute; }
+:root[data-layout="watch"] .clock.local {
+  left: 50%; top: 18%; transform: translateX(-50%); width: 70%; background: transparent; box-shadow: none; border-radius: 0; padding: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; gap: 1px;
+}
+:root[data-layout="watch"] .clock.local .city, :root[data-layout="watch"] .clock.local .meta { align-self: center; max-width: 100%; }
+:root[data-layout="watch"] .clock.local .city { font-size: clamp(13px, calc(var(--u) * 20), 18px); }
+/* Time size from Settings, Display, on the watch home row too (--tsz). */
+:root[data-layout="watch"] .clock.local .time { font-size: calc(clamp(28px, calc(var(--u) * 52), 60px) * var(--tsz, 1)); text-align: center; }
+:root[data-layout="watch"] .clock.local .meta { justify-content: center; font-size: clamp(12px, calc(var(--u) * 16), 15px); }
+:root[data-layout="watch"] .clock.local .date { text-align: center; font-size: clamp(12px, calc(var(--u) * 16), 15px); margin-top: 0; }
+:root[data-layout="watch"] .clock.local .mil { text-align: center; margin: 2px 0 0; }
+/* the other cities: small circles on the lower arc (placed by JS) */
+:root[data-layout="watch"] .clock:not(.local) {
+  border-radius: 50%; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0;
+  background: color-mix(in srgb, var(--card) 100%, transparent);
+}
+:root[data-layout="watch"] .clock:not(.local) .city { font-size: clamp(12px, calc(var(--u) * 16), 14px); max-width: 92%; align-self: center; }
+:root[data-layout="watch"] .clock:not(.local) .time { font-size: clamp(15px, calc(var(--u) * 22), 20px); text-align: center; }
+:root[data-layout="watch"] .clock:not(.local) .time .ampm { font-size: 0.48em; margin-left: 0.12em; }
+:root[data-layout="watch"] .clock:not(.local) .time .sec, :root[data-layout="watch"] .clock:not(.local):not(.expanded) .meta,
+:root[data-layout="watch"] .clock:not(.local):not(.expanded) .date, :root[data-layout="watch"] .clock:not(.local) .mil { display: none; }
+:root[data-layout="watch"] .clock:not(.local).expanded { transform: scale(1.12); z-index: 6; }
+:root[data-layout="watch"] .clock:not(.local).expanded .meta,
+:root[data-layout="watch"] .clock:not(.local).expanded .date { display: flex; justify-content: center; font-size: 12px; }
+:root[data-layout="watch"] .clock:not(.local) .meta { align-self: center; }
+/* opacity arc on the left rim */
+.watch .w-arc { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; cursor: pointer; touch-action: none; pointer-events: none; }
+/* The svg spans the whole disc. Only the drawn arc and knob take the pointer, so the face stays a drag handle. */
+.watch .w-arc-track, .watch .w-arc-fill { pointer-events: stroke; }
+.watch .w-knob { pointer-events: auto; cursor: grab; }
+.watch .w-arc:focus-visible { outline: none; }
+.watch .w-arc:focus-visible .w-knob circle { stroke-width: 2; }
+.watch .w-arc-track { stroke: color-mix(in srgb, var(--muted) 35%, transparent); stroke-width: 3.2; stroke-linecap: round; }
+.watch .w-arc-fill { stroke: var(--accent); stroke-width: 3.2; stroke-linecap: round; }
+/* the knob carries the value; the tag inside the rim carries the name */
+.watch .w-knob circle { fill: var(--accent); stroke: var(--card); stroke-width: 1; }
+.watch .w-knob-val { font-family: var(--font-mono); font-size: 4.3px; font-weight: 700; fill: var(--knob-text-fade, #111111); text-anchor: middle; pointer-events: none; }
+.watch .w-tag rect { fill: var(--accent); }
+.watch .w-tag text { font-family: var(--font-body); font-size: 3.4px; font-weight: 800; letter-spacing: 0.02em; fill: var(--knob-text-fade, #111111); text-anchor: middle; }
+.watch .w-arc-size .w-arc-fill { stroke: var(--secondary); }
+.watch .w-arc-size .w-knob circle, .watch .w-arc-size .w-tag rect { fill: var(--secondary); }
+/* --knob-text-fade / --knob-text-size: black or white, picked by the page against each knob's own color */
+.watch .w-arc-size .w-knob-val, .watch .w-arc-size .w-tag text { fill: var(--knob-text-size, #111111); }
+/* rim nodes */
+.watch .w-nodes { position: absolute; inset: 0; pointer-events: none; }
+.watch .w-nodes .icon-btn { position: absolute; border-radius: 50%; pointer-events: auto; background: var(--card); box-shadow: 0 0 0 3px var(--bg), var(--card-outline); }
+.watch .w-nodes .icon-btn svg { width: 16px; height: 16px; }
+/* The four tools are pills: icon and name, so a first look says what each one does */
+.watch .w-nodes .icon-btn.pill { width: auto; min-width: 0; border-radius: 999px; padding: 0 11px 0 8px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 30px; white-space: nowrap; overflow: visible; }
+.watch .w-nodes .icon-btn.pill .w-label { font: 800 12px var(--font-body); letter-spacing: 0.01em; color: var(--text); line-height: 1; }
+.watch .w-nodes .icon-btn.pill svg { flex: 0 0 auto; }
+
+.watch .w-nodes .lock-btn { background: var(--accent); color: var(--card); border-color: var(--accent); }
+:root[data-widget="1"].locked .watch .w-nodes .lock-btn { box-shadow: none; }
+:root[data-neon="1"] .watch .w-nodes .icon-btn { box-shadow: 0 0 0 3px var(--bg), 0 0 0 4.5px var(--neon); }
+/* locked: the disc, brand, arc, and nodes go; the local row becomes its own circle; the crown stays */
+:root[data-widget="1"].locked[data-shell="watch"]:not([data-anim="1"]) .watch .disc { background: transparent !important; box-shadow: none !important; }
+:root[data-widget="1"].locked[data-shell="watch"]:not([data-anim="1"]) .w-brand { display: none !important; }
+/* Locked: the meters stay and still work, faint like the lock button, full under the cursor or right after locking. */
+:root[data-widget="1"].locked[data-shell="watch"] .w-arc { opacity: 0.22; transition: opacity 0.45s ease; }
+:root[data-widget="1"].locked.lock-recent[data-shell="watch"] .w-arc, :root[data-widget="1"].locked[data-shell="watch"] .w-arc:hover { opacity: 1; }
+:root[data-widget="1"].locked[data-shell="watch"] .w-nodes .icon-btn:not(.lock-btn):not(.notes-btn):not(.top-btn) { display: none !important; }
+:root[data-widget="1"].locked[data-shell="watch"] .w-nodes .lock-btn { box-shadow: none; }
+/* Notes, In front, and the lock stay while the clock is locked; a faint glow of the accent keeps them findable */
+:root[data-widget="1"][data-shell="watch"] .watch .w-nodes .notes-btn, :root[data-widget="1"][data-shell="watch"] .watch .w-nodes .top-btn, :root[data-widget="1"][data-shell="watch"] .watch .w-nodes .lock-btn {
+  box-shadow: var(--card-outline), 0 0 10px 2px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+:root[data-widget="1"][data-neon="1"][data-shell="watch"] .watch .w-nodes .notes-btn, :root[data-widget="1"][data-neon="1"][data-shell="watch"] .watch .w-nodes .top-btn, :root[data-widget="1"][data-neon="1"][data-shell="watch"] .watch .w-nodes .lock-btn {
+  box-shadow: 0 0 0 1.5px var(--neon), 0 0 calc(var(--glow) * 0.4px) var(--neon), 0 0 12px 3px color-mix(in srgb, var(--neon) 55%, transparent);
+}
+:root[data-widget="1"].locked[data-shell="watch"] .watch .w-nodes .lock-btn { box-shadow: 0 0 10px 2px color-mix(in srgb, var(--accent) 45%, transparent); }
+/* Watch shell on the desktop widget: the window shows nothing but the disc and its rim buttons */
+:root[data-widget="1"][data-shell="watch"] body, :root[data-widget="1"][data-shell="watch"] html { background: transparent !important; }
+:root[data-widget="1"][data-shell="watch"] .bg-layer { display: none !important; }
+:root[data-widget="1"][data-shell="watch"] .watch .disc { background: color-mix(in srgb, var(--card) calc(var(--card-alpha) * 100%), transparent); }
+:root[data-widget="1"][data-shell="watch"] .watch .w-nodes .icon-btn { box-shadow: var(--card-outline); }
+:root[data-widget="1"][data-neon="1"][data-shell="watch"] .watch .w-nodes .icon-btn { box-shadow: 0 0 0 1.5px var(--neon), 0 0 calc(var(--glow) * 0.3px + 1px) color-mix(in srgb, var(--neon) 65%, transparent), 0 0 calc(var(--glow) * 0.8px + 2px) color-mix(in srgb, var(--neon) 25%, transparent); }
+
+/* ===== redesign: refined watch, concept A (theme aware) ===== */
+/* metal case ring: built from the theme's own text, muted and card colors, so every theme gets its own metal */
+.watch .disc { --case-hi: color-mix(in srgb, var(--card) 55%, white); --case-lo: color-mix(in srgb, var(--text) 55%, var(--card)); --case-mid: color-mix(in srgb, var(--muted) 60%, var(--card)); }
+.watch .disc::before {
+  content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none; z-index: 0;
+  background: conic-gradient(from 210deg, var(--case-hi), var(--case-mid) 18%, var(--case-lo) 32%, var(--case-mid) 48%, var(--case-hi) 62%, var(--case-mid) 78%, var(--case-lo) 90%, var(--case-hi));
+  -webkit-mask: radial-gradient(circle, transparent calc(50% - 7px), #000 calc(50% - 6.5px)); mask: radial-gradient(circle, transparent calc(50% - 7px), #000 calc(50% - 6.5px));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text) 25%, transparent);
+  transition: opacity 0.7s ease;
+}
+/* minute track: 60 ticks, every fifth heavier, just inside the case */
+.watch .disc::after {
+  content: ""; position: absolute; inset: 9px; border-radius: 50%; pointer-events: none; z-index: 0; opacity: 0.55;
+  background:
+    repeating-conic-gradient(from -0.6deg, color-mix(in srgb, var(--text) 80%, transparent) 0 1.2deg, transparent 1.2deg 30deg),
+    repeating-conic-gradient(from -0.3deg, color-mix(in srgb, var(--muted) 70%, transparent) 0 0.6deg, transparent 0.6deg 6deg);
+  -webkit-mask: radial-gradient(circle, transparent calc(50% - 6px), #000 calc(50% - 5.5px)); mask: radial-gradient(circle, transparent calc(50% - 6px), #000 calc(50% - 5.5px));
+  transition: opacity 0.7s ease;
+}
+.watch .w-brand, .watch .w-inner, .watch .w-tipslot { z-index: 1; }
+:root[data-layout="watch"] .clock.local .time { font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+:root[data-layout="watch"] .clock:not(.local) .city { letter-spacing: 0.04em; text-transform: uppercase; font-weight: 800; }
+:root[data-layout="watch"] .clock:not(.local) .time { font-variant-numeric: tabular-nums; font-weight: 700; }
+/* the meters inside the case, with clear labels */
+.watch .w-arc-track { stroke-width: 2.6; }
+.watch .w-arc-fill { stroke-width: 2.6; }
+.watch .w-tag text { font-size: 3.2px; letter-spacing: 0.1em; }
+/* pushers: the rim buttons read as metal pushers on the case, at the same angles as before */
+.watch .w-nodes .icon-btn:not(.lock-btn) {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--card) 80%, white), var(--card) 55%, color-mix(in srgb, var(--card) 80%, var(--text)));
+  border: 1px solid color-mix(in srgb, var(--text) 22%, transparent);
+}
+/* the crown at 3 o'clock is the Lock: knurled edge, a ruby when locked */
+.watch .w-nodes .lock-btn {
+  border-radius: 10px; position: absolute; overflow: visible;
+  background:
+    repeating-linear-gradient(90deg, color-mix(in srgb, black 22%, transparent) 0 1.5px, transparent 1.5px 4px),
+    linear-gradient(180deg, color-mix(in srgb, var(--accent) 70%, white), var(--accent) 50%, color-mix(in srgb, var(--accent) 70%, black));
+}
+.watch .w-nodes .lock-btn::after {
+  content: ""; position: absolute; right: -3px; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffb3b3, #c0102a 55%, #6a0012); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+  opacity: 0; transform: scale(0.5); transition: opacity 0.3s ease, transform 0.3s ease;
+}
+:root[data-widget="1"].locked .watch .w-nodes .lock-btn::after { opacity: 1; transform: none; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), 0 0 6px 1px rgba(220, 20, 50, 0.7); }
+/* one fixed slot for names and keys, where the wordmark sits; the wordmark steps aside while it shows */
+.watch .w-tipslot {
+  position: absolute; left: 50%; top: 9%; transform: translateX(-50%); display: flex; align-items: center; gap: 6px; white-space: nowrap;
+  font: 800 12px var(--font-body); color: var(--text); opacity: 0; pointer-events: none; transition: opacity 0.15s ease; height: 26px;
+}
+.watch .w-tipslot, .watch .w-tipslot.show { display: none !important; }
+.watch .w-tipslot .w-tip-key:empty { display: none; }
+.watch .w-tipslot .w-tip-key { font: 700 10.5px var(--font-mono); padding: 1px 6px; border-radius: 5px; border: 1px solid color-mix(in srgb, var(--text) 35%, transparent); color: var(--muted); }
+.watch .w-brand { transition: opacity 0.15s ease; }
+.watch.tip-on .w-brand { opacity: 0; }
+:root[data-widget="1"].locked .watch .w-tipslot { display: none; }
+
+/* ===== Lock: a smooth dissolve; the local clock and the city times stay ===== */
+:root[data-shell="watch"] .watch .disc { transition: background-color 0.7s ease, box-shadow 0.7s ease; }
+:root[data-shell="watch"] .watch .w-brand, :root[data-shell="watch"] .clock.local { transition: opacity 0.7s ease, visibility 0s linear 0s; }
+:root[data-widget="1"].locked[data-shell="watch"]:not([data-anim="1"]) .w-brand { display: flex !important; opacity: 0; visibility: hidden; transition: opacity 0.7s ease, visibility 0s linear 0.7s; }
+:root[data-widget="1"].locked[data-shell="watch"]:not([data-anim="1"]) .watch .disc::before, :root[data-widget="1"].locked[data-shell="watch"]:not([data-anim="1"]) .watch .disc::after { opacity: 0; }
+/* the big local clock and its city/date line stay, at the same size and position */
+:root[data-widget="1"].locked[data-shell="watch"] .clock.local { opacity: 1; visibility: visible; }
+/* the city times that remain read on any desktop */
+:root[data-widget="1"].locked[data-shell="watch"]:not([data-anim="1"]) .clock .time, :root[data-widget="1"].locked[data-shell="watch"]:not([data-anim="1"]) .clock .city,
+:root[data-widget="1"].locked[data-shell="watch"]:not([data-anim="1"]) .clock .meta, :root[data-widget="1"].locked[data-shell="watch"]:not([data-anim="1"]) .clock .date {
+  text-shadow: 0 1px 2px color-mix(in srgb, var(--card) 85%, transparent), 0 0 6px color-mix(in srgb, var(--card) 70%, transparent);
+}
+/* FADE and SIZE go while locked */
+:root[data-widget="1"].locked[data-shell="watch"] .w-arc, :root[data-widget="1"].locked.lock-recent[data-shell="watch"] .w-arc, :root[data-widget="1"].locked[data-shell="watch"] .w-arc:hover { opacity: 0 !important; pointer-events: none !important; visibility: hidden; transition: opacity 0.7s ease, visibility 0s linear 0.7s; }
+:root[data-widget="1"].locked[data-shell="watch"] .w-arc * { pointer-events: none !important; }
+/* Notes, In front and the Lock crown stay, faint and clickable */
+:root[data-widget="1"].locked[data-shell="watch"] .w-nodes .notes-btn, :root[data-widget="1"].locked[data-shell="watch"] .w-nodes .top-btn, :root[data-widget="1"].locked[data-shell="watch"] .w-nodes .lock-btn { opacity: 0.45; transition: opacity 0.3s ease; }
+:root[data-widget="1"].locked[data-shell="watch"] .w-nodes .notes-btn:hover, :root[data-widget="1"].locked[data-shell="watch"] .w-nodes .top-btn:hover, :root[data-widget="1"].locked[data-shell="watch"] .w-nodes .lock-btn:hover { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .watch .disc, .watch .disc::before, .watch .disc::after, .watch .w-brand, .watch .w-tipslot, .watch .w-arc, .clock.local, .watch .w-nodes .icon-btn, .watch .w-nodes .lock-btn::after { transition: none !important; }
+}
+
+/* ===== the approved watch (concept A, refined): metal case, pushers, crown, sunray dial ===== */
+/* --u is one unit of the mockup (the dial is 468 units wide), set by layoutNodes */
+:root[data-shell="watch"] .watch { --u: 1px; margin-top: calc(var(--u) * 52); }
+.watch .w-case { position: absolute; left: 0; top: 0; width: 100%; height: auto; overflow: visible; pointer-events: none; z-index: 0; }
+.watch .w-case .wc-body { transition: opacity 0.7s ease; }
+.watch .w-case .wc-n > g { transition: transform 0.15s ease, filter 0.15s ease; }
+.watch .w-case .wc-n.hov > g { filter: brightness(1.08) drop-shadow(0 0 5px color-mix(in srgb, var(--accent) 90%, transparent)); }
+.watch .w-case .wc-n.press > g { translate: var(--dx) var(--dy); }
+.watch .w-case .wc-lab { opacity: 1; paint-order: stroke; stroke-width: 2.4px; stroke-linejoin: round; font-family: var(--font-body); transition: opacity 0.15s ease, fill 0.15s ease; }
+.watch .w-case .wc-lab.hov { opacity: 1; fill: var(--accent); }
+.watch .w-case .wc-ruby { opacity: 0; transition: opacity 0.4s ease; }
+:root[data-shell="watch"] .watch .disc { background: transparent !important; box-shadow: none !important; z-index: 1; }
+:root[data-shell="watch"] .watch .disc::before, :root[data-shell="watch"] .watch .disc::after { display: none; }
+:root[data-neon="1"][data-shell="watch"] .watch .disc { box-shadow: none; }
+:root[data-neon="1"][data-shell="watch"] .watch .w-case { filter: drop-shadow(0 0 calc(var(--glow) * 0.3px + 1px) color-mix(in srgb, var(--neon) 60%, transparent)); }
+:root[data-shell="watch"] .watch .w-tipslot {
+  background: #15171c; color: #f3efe6; z-index: 3;
+}
+:root[data-shell="watch"] .watch .w-tipslot .w-tip-name { overflow: hidden; text-overflow: ellipsis; }
+:root[data-shell="watch"] .watch .w-tipslot .w-tip-key { color: #f3efe6; border-color: rgba(243,239,230,.45); }
+/* the meters on the ring band, at the left, with their names inside the dial */
+.watch .w-arc-under { stroke: color-mix(in srgb, var(--text) 25%, transparent); stroke-width: 1.34; stroke-linecap: round; }
+.watch .w-arc-track { stroke: var(--bg); stroke-width: 0.95; stroke-linecap: round; }
+.watch .w-arc-fill { stroke-width: 0.95; stroke-linecap: round; }
+.watch .w-tag rect { display: none; }
+/* meter names and values match the rim labels: 12.5 case units, weight 900, text color with a background halo */
+.watch .w-tag text, .watch .w-arc-size .w-tag text { font: 800 3.35px var(--font-read, var(--font-body)); letter-spacing: 0.04px; fill: var(--text); stroke: var(--bg); stroke-width: 0.45px; paint-order: stroke; stroke-linejoin: round; }
+.watch .w-knob circle:not(.w-knob-hit) { stroke: var(--text); stroke-width: 0.29; }
+.watch .w-knob circle:not(.w-knob-hit) { r: 2.9px; }
+/* a wider invisible grip around each meter knob, so FADE and SIZE are easy to catch */
+.watch .w-knob circle.w-knob-hit { fill: transparent !important; stroke: none !important; pointer-events: all; }
+.watch .w-knob .w-knob-val { font: 900 2.67px var(--font-body); text-anchor: middle; dominant-baseline: central; }
+/* rim buttons: invisible targets over the pushers and the crown; the names show in the tip slot */
+:root[data-shell="watch"] .watch .w-nodes .icon-btn, :root[data-shell="watch"] .watch .w-nodes .lock-btn {
+  background: transparent !important; border: 0 !important; box-shadow: none !important; border-radius: 30%; padding: 0; min-width: 0; color: transparent;
+}
+:root[data-shell="watch"] .watch .w-nodes .icon-btn > *, :root[data-shell="watch"] .watch .w-nodes .lock-btn::after { visibility: hidden; }
+:root[data-shell="watch"] .watch .w-nodes .icon-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+/* Lock: the watch dissolves; the city pills keep a drop shadow; Notes, In front and the crown stay faint */
+:root[data-widget="1"].locked[data-shell="watch"]:not([data-anim="1"]) .watch .w-case .wc-body { opacity: 0; }
+:root[data-widget="1"].locked[data-shell="watch"] .watch .w-case .wc-keep .wc-n { opacity: 0.38; transition: opacity 0.6s ease; }
+:root[data-widget="1"].locked[data-shell="watch"] .watch .w-case .wc-keep .wc-n.hov { opacity: 1; }
+:root[data-widget="1"].locked[data-shell="watch"] .watch .w-case .wc-ruby.opt { opacity: 1; }
+:root[data-widget="1"].locked[data-shell="watch"]:not([data-anim="1"]) .watch .clocks .clock { filter: drop-shadow(0 1px 1.5px var(--case-shadow, rgba(0,0,0,.5))) drop-shadow(0 0 4px var(--case-shadow, rgba(0,0,0,.5))); }
+:root[data-widget="1"].locked[data-shell="watch"] .watch .w-nodes .icon-btn { opacity: 1 !important; }
+/* Animated layouts only: the metal case, rim names and buttons fade.
+   The scene canvas and the clock rows are not in the case, so they stay.
+   Watch and the static layouts keep the :not([data-anim="1"]) rules above. */
+:root[data-widget="1"].locked[data-anim="1"] .watch .w-case .wc-body,
+:root[data-widget="1"].locked[data-anim="1"] .watch .w-case .wc-keep,
+:root[data-widget="1"].locked[data-anim="1"] .watch .w-case .wc-keep .wc-n,
+:root[data-widget="1"].locked[data-anim="1"] .w-brand { opacity: 0; }
+:root[data-widget="1"].locked[data-anim="1"] .watch .w-nodes,
+:root[data-widget="1"].locked[data-anim="1"] .watch .w-nodes .icon-btn { opacity: 0 !important; }
+@media (prefers-reduced-motion: reduce) {
+  .watch .w-case *, .watch .clocks .clock { transition: none !important; }
+  .watch .w-case .wc-n.press > g { translate: none; }
+}
+
+/* Lock option: the clock only (the city rows dissolve with the case) */
+:root[data-widget="1"].locked[data-lock-keep="clock"] .clock:not(.local) { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.7s ease, visibility 0s linear 0.7s; }
+/* the first lock's tip shows even though toasts hide while locked */
+:root[data-widget="1"].locked .toast.lock-tip { display: block; }
+
+/* Readable disc type is below, after the case, so it wins on size without !important. */
+
+/* Update ready: in the watch the red dot sits just past the Settings pusher tip (the pad is turned so its
+   right edge points outward), and the SETTINGS name takes the dot's color, so it reads as one cue. */
+:root[data-shell="watch"] .watch .w-nodes .icon-btn.has-update::after, :root[data-shell="watch"] .watch .w-nodes .icon-btn.has-update::before { visibility: visible; top: 50%; right: 2px; margin-top: -5px; }
+.watch .w-case .wc-lab.upd { fill: #ff3b3b; }
+
+/* ===== Six classic compositions =====
+   Each one builds a different picture in the safe box. Country, offset and seconds
+   stay off the face so the city and the time can stay large. */
+
+:root[data-shell="watch"]:not([data-layout="watch"]):not([data-anim="1"]) .clock {
+  position: relative; left: auto !important; top: auto !important; width: auto; height: auto;
+  min-width: 0; min-height: 0; margin: 0; overflow: visible;
+}
+:root[data-shell="watch"]:not([data-layout="watch"]):not([data-anim="1"]) .clock .meta,
+:root[data-shell="watch"]:not([data-layout="watch"]):not([data-anim="1"]) .clock .mil,
+:root[data-shell="watch"]:not([data-layout="watch"]):not([data-anim="1"]) .clock .date,
+:root[data-shell="watch"]:not([data-layout="watch"]):not([data-anim="1"]) .clock .bar,
+:root[data-shell="watch"]:not([data-layout="watch"]):not([data-anim="1"]) .clock .time .sec { display: none !important; }
+:root[data-shell="watch"]:not([data-layout="watch"]):not([data-anim="1"]) .clock .time {
+  font-weight: 700; line-height: 1; letter-spacing: -0.03em; white-space: nowrap;
+}
+:root[data-shell="watch"]:not([data-layout="watch"]):not([data-anim="1"]) .clock .city {
+  font-weight: 750; line-height: 1.1; letter-spacing: 0; text-transform: none;
+}
+/* Cards: a separate plate for every city. The name sits on its own line so a long city stays whole, and the time sits under it. */
+:root[data-shell="watch"][data-layout="cards"] .watch .w-inner .clocks {
+  display: flex; flex-direction: column; justify-content: stretch; gap: 5px; height: 100%;
+  background: transparent; box-shadow: none; padding: 0; border-radius: 0;
+}
+:root[data-shell="watch"][data-layout="cards"] .clock {
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 1px;
+  flex: 1 1 0; min-height: 0; padding: 4px 12px; border-radius: 16px;
+  background: color-mix(in srgb, var(--card) 94%, transparent); box-shadow: var(--card-outline);
+}
+:root[data-shell="watch"][data-layout="cards"] .clock.local { flex: 1.35 1 0; box-shadow: var(--hero-outline); padding-left: 14px; }
+:root[data-shell="watch"][data-layout="cards"] .clock .city { font-size: clamp(14px, calc(var(--u) * 26), 18px); max-width: 100%; }
+:root[data-shell="watch"][data-layout="cards"] .clock .time { font-size: calc(clamp(18px, var(--u) * 36, 30px) * var(--tsz, 1)); text-align: left; }
+:root[data-shell="watch"][data-layout="cards"] .clock.local .time { font-size: calc(clamp(26px, var(--u) * 52, 44px) * var(--tsz, 1)); }
+
+/* Soft sheet: one shared surface. The local time is a centered headline; the other cities are quiet lines under it. */
+:root[data-shell="watch"][data-layout="sheet"] .watch .w-inner .clocks {
+  display: flex; flex-direction: column; height: 100%; gap: 0; padding: 8px 14px 10px; border-radius: 26px;
+  background: color-mix(in srgb, var(--card) 94%, transparent); box-shadow: var(--card-outline);
+}
+:root[data-shell="watch"][data-layout="sheet"] .clock {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "city time";
+  align-items: center; column-gap: 8px;
+  flex: 1 1 22px; min-height: 22px; padding: 0;
+  background: transparent; box-shadow: none; border-radius: 0; border-bottom: 1px solid var(--line);
+}
+:root[data-shell="watch"][data-layout="sheet"] .clock:last-child { border-bottom: 0; }
+:root[data-shell="watch"][data-layout="sheet"] .clock.local {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+  flex: 0 0 auto; border-bottom: 1px solid var(--line); gap: 0; padding: 2px 0 6px;
+  box-shadow: inset 0 -3px 0 var(--accent);
+}
+:root[data-shell="watch"][data-layout="sheet"] .clock .city { grid-area: city; font-size: clamp(14px, calc(var(--u) * 24), 17px); max-width: 100%; }
+:root[data-shell="watch"][data-layout="sheet"] .clock .time { grid-area: time; font-size: calc(clamp(16px, var(--u) * 32, 26px) * var(--tsz, 1)); text-align: right; }
+:root[data-shell="watch"][data-layout="sheet"] .clock.local .time { font-size: calc(clamp(26px, var(--u) * 50, 48px) * var(--tsz, 1)); text-align: center; width: 100%; }
+:root[data-shell="watch"][data-layout="sheet"] .clock.local .city { font-size: clamp(14px, calc(var(--u) * 24), 18px); flex: 0 0 auto; width: 100%; text-align: center; }
+
+/* Daylight bars: the day band is the row. City and time sit on it, and the dot marks their hour. */
+:root[data-shell="watch"][data-layout="daylight"] .watch .w-inner .clocks {
+  display: flex; flex-direction: column; justify-content: space-evenly; height: 100%; gap: 6px;
+  background: transparent; box-shadow: none; padding: 0;
+}
+:root[data-shell="watch"][data-layout="daylight"] .clock {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "city time" "bar bar";
+  align-items: end; column-gap: 8px; row-gap: 4px; flex: 1 1 0; min-height: 0; padding: 0 2px;
+  background: transparent; box-shadow: none; border-radius: 0;
+}
+:root[data-shell="watch"]:not([data-anim="1"])[data-layout="daylight"] .clock .bar {
+  display: block !important; grid-area: bar; height: 10px; margin: 0; border-radius: 5px; position: relative;
+}
+:root[data-shell="watch"][data-layout="daylight"] .clock .bar i { width: 14px; height: 14px; top: -2px; }
+:root[data-shell="watch"][data-layout="daylight"] .clock .city { grid-area: city; font-size: clamp(14px, calc(var(--u) * 26), 18px); }
+:root[data-shell="watch"][data-layout="daylight"] .clock .time { grid-area: time; font-size: calc(clamp(18px, var(--u) * 36, 30px) * var(--tsz, 1)); text-align: right; }
+:root[data-shell="watch"][data-layout="daylight"] .clock.local .time { font-size: calc(clamp(22px, var(--u) * 44, 36px) * var(--tsz, 1)); }
+:root[data-shell="watch"][data-layout="daylight"] .clock.local .bar { height: 12px; box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent); }
+
+/* Split panel: a tinted local block over a plain index. The two parts do not share a plate. */
+:root[data-shell="watch"][data-layout="split"] .watch .w-inner .clocks {
+  display: flex !important; flex-direction: column !important; flex-wrap: nowrap !important;
+  height: 100%; gap: 4px; padding: 0; background: transparent; box-shadow: none; overflow: visible;
+}
+:root[data-shell="watch"][data-layout="split"] .clock.local {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 2px;
+  flex: 0 0 auto; width: 100%; min-height: 56px; border-radius: 22px; padding: 8px 8px 6px; overflow: visible;
+  background: color-mix(in srgb, var(--accent) 24%, var(--card)); box-shadow: var(--hero-outline);
+}
+:root[data-shell="watch"][data-layout="split"] .clock:not(.local) {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "city time";
+  align-items: center; column-gap: 8px; flex: 1 1 auto; min-height: 20px; width: 100%; padding: 0 14px 0 6px;
+  background: transparent; box-shadow: none; border-radius: 0; border-bottom: 1px solid var(--line); overflow: visible;
+}
+:root[data-shell="watch"][data-layout="split"] .clock:last-child { border-bottom: 0; }
+:root[data-shell="watch"][data-layout="split"] .clock .city { grid-area: city; font-size: clamp(14px, calc(var(--u) * 26), 18px); }
+:root[data-shell="watch"][data-layout="split"] .clock .time { grid-area: time; font-size: calc(clamp(18px, var(--u) * 34, 28px) * var(--tsz, 1)); text-align: right; overflow: visible; }
+:root[data-shell="watch"][data-layout="split"] .clock.local .time { font-size: calc(clamp(26px, var(--u) * 52, 48px) * var(--tsz, 1)); text-align: center; flex: 0 0 auto; }
+:root[data-shell="watch"][data-layout="split"] .clock.local .city {
+  font-size: clamp(14px, calc(var(--u) * 24), 18px); flex: 0 0 auto; align-self: center;
+  overflow: visible; min-height: 1.2em; line-height: 1.15; height: auto;
+}
+
+/* Dial: a round face for home, and the other cities as a pair of short chips under it. Not a second list. */
+:root[data-shell="watch"][data-layout="dial"] .watch .w-inner .clocks {
+  display: flex; flex-flow: row wrap; align-content: center; justify-content: center; align-items: center;
+  height: 100%; gap: 6px 8px; background: transparent; box-shadow: none; padding: 0;
+}
+:root[data-shell="watch"][data-layout="dial"] .clock.local {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0;
+  flex: 0 0 100%; width: min(118px, 62%) !important; height: auto !important; aspect-ratio: 1; max-height: none;
+  margin: 0 auto; border-radius: 50%; padding: 10px; overflow: hidden;
+  box-shadow: var(--hero-outline), inset 0 0 0 7px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+:root[data-shell="watch"][data-layout="dial"] .clock.local::before { height: 22%; margin-top: -22%; width: 2px; margin-left: -1px; z-index: 0; }
+:root[data-shell="watch"][data-layout="dial"] .clock.local::after { height: 30%; margin-top: -30%; width: 2px; margin-left: -1px; z-index: 0; }
+:root[data-shell="watch"][data-layout="dial"] .clock.local .time,
+:root[data-shell="watch"][data-layout="dial"] .clock.local .city { position: relative; z-index: 1; text-align: center; max-width: 90%; }
+:root[data-shell="watch"][data-layout="dial"] .clock.local .time {
+  font-size: calc(clamp(18px, var(--u) * 36, 32px) * var(--tsz, 1));
+  background: color-mix(in srgb, var(--card) 88%, transparent); border-radius: 8px; padding: 1px 4px;
+}
+:root[data-shell="watch"][data-layout="dial"] .clock.local .city { font-size: clamp(12px, calc(var(--u) * 22), 16px); }
+:root[data-shell="watch"][data-layout="dial"] .clock:not(.local) {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0;
+  flex: 1 1 42%; width: auto; max-width: 48%; min-height: 0; border-radius: 999px; padding: 3px 8px;
+  background: color-mix(in srgb, var(--card) 92%, transparent); box-shadow: var(--card-outline);
+}
+:root[data-shell="watch"][data-layout="dial"] .clock:not(.local) .city { font-size: clamp(12px, calc(var(--u) * 22), 15px); max-width: 100%; }
+:root[data-shell="watch"][data-layout="dial"] .clock:not(.local) .time { font-size: calc(clamp(15px, var(--u) * 30, 22px) * var(--tsz, 1)); text-align: center; }
+
+/* Typographic: no plates. Home time is a centered poster; every other line is the time and the city, spread across the width.
+   A narrower box than the other classics, because the time sits on the left and the city on the right: both have to stay inside the circle. */
+:root[data-shell="watch"][data-layout="type"] .watch .w-inner { left: 17%; top: 20%; width: 66%; height: 60%; }
+:root[data-shell="watch"][data-layout="type"] .watch .w-inner .clocks {
+  display: flex; flex-direction: column; justify-content: space-evenly; height: 100%; gap: 0;
+  background: transparent; box-shadow: none; padding: 0;
+}
+:root[data-shell="watch"][data-layout="type"] .clock {
+  display: flex; flex-direction: row; justify-content: space-between; align-items: baseline; gap: 10px;
+  flex: 1 1 0; min-height: 0; width: 100%; padding: 0; background: transparent; box-shadow: none; border-radius: 0;
+}
+:root[data-shell="watch"][data-layout="type"] .clock.local {
+  flex-direction: column; align-items: center; justify-content: center; text-align: center; flex: 1.6 1 0;
+}
+:root[data-shell="watch"][data-layout="type"] .clock .time { font-size: calc(clamp(20px, var(--u) * 40, 34px) * var(--tsz, 1)); text-align: left; }
+:root[data-shell="watch"][data-layout="type"] .clock .city { font-size: clamp(15px, calc(var(--u) * 28), 20px); text-align: right; max-width: 58%; }
+:root[data-shell="watch"][data-layout="type"] .clock.local .time { font-size: calc(clamp(34px, var(--u) * 68, 58px) * var(--tsz, 1)); text-align: center; color: var(--accent-ink, var(--accent)); }
+:root[data-shell="watch"][data-layout="type"] .clock.local .city { font-size: clamp(16px, calc(var(--u) * 30), 22px); text-align: center; max-width: 100%; flex: 0 0 auto; }
+
+/* Watch face cities. An arc of capsules when they fit; a readable stack when the disc is small. */
+:root[data-layout="watch"] .clock:not(.local) .city { text-transform: none; letter-spacing: 0; font-weight: 750; }
+:root[data-layout="watch"] .clock:not(.local)[data-stack="1"] {
+  border-radius: 999px; flex-direction: row; justify-content: space-between; align-items: center;
+  gap: 6px; padding: 0 10px; text-align: left;
+}
+:root[data-layout="watch"] .clock:not(.local)[data-stack="1"] .city { max-width: 62%; text-align: left; font-size: clamp(13px, calc(var(--u) * 22), 16px); }
+:root[data-layout="watch"] .clock:not(.local)[data-stack="1"] .time { font-size: clamp(15px, calc(var(--u) * 26), 20px); text-align: right; }
+:root[data-layout="watch"] .clock:not(.local):not([data-stack="1"]) { padding: 2px 6px; }

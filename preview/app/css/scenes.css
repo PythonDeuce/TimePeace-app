@@ -1,0 +1,190 @@
+/* TimePeace animated layouts. js/scenes.js paints the art on a canvas behind the rows and places the rows
+   (inline left, top, width, height in px; --k is one art unit in px, --rs the row's size against a full pill).
+   Everything here restyles the same .clock rows, per scene, so the text stays live DOM and readable.
+   Scene variables sit on the disc: --p-* the city pills, --l-* the local time block. The page sets --sc-accent,
+   --sc-ink and --sc-paper there from the active theme; light scenes use them, dark scenes keep their own palette. */
+
+/* the canvas: inside the disc, behind the rows, never takes the pointer */
+.watch .disc .scene-cv { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 50%; pointer-events: none; z-index: 0; }
+/* Lock never changes the art: it is never dimmed, hidden or paused by it. Its strength is the Fade level, locked or not
+   (so the slider shows what it does while the clock is unlocked, and locking changes nothing). */
+.watch .disc .scene-cv { opacity: var(--fade, 1); }
+
+/* the rows fill the disc and are placed by script */
+:root[data-anim="1"][data-shell="watch"] .watch .w-inner { inset: 0; left: 0; top: 0; width: 100%; height: 100%; }
+:root[data-anim="1"][data-shell="watch"] .watch .w-inner .clocks { position: absolute; inset: 0; width: 100%; height: 100%; transform: none; display: block; gap: 0; --k: 0.56px; }
+
+:root[data-anim="1"] .clock {
+  position: absolute; box-sizing: border-box; margin: 0; padding: 0 calc(var(--k) * 6 * var(--rs, 1)); gap: 0;
+  display: flex; flex-direction: column; align-items: var(--p-ai, flex-start); justify-content: center; text-align: var(--p-ta, left);
+  background: var(--p-bg, transparent); color: var(--p-fg, var(--text)); border-radius: var(--p-r, 18px); box-shadow: var(--p-sh, none);
+  transform: translate(var(--ox, 0px), var(--oy, 0px)); text-shadow: var(--p-ts, none); overflow: visible;
+  --fs: calc(var(--k) * var(--rs, 1));
+}
+:root[data-anim="1"] .clock > * { flex: 0 0 auto; }
+:root[data-anim="1"] .clock .city {
+  font-family: var(--font-read, var(--font-body));
+  font-size: clamp(12px, calc(var(--fs) * 20), 16px); font-weight: 750; letter-spacing: 0; line-height: 1.05; color: var(--p-sub, inherit); opacity: 1;
+  max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; align-self: var(--p-ai, flex-start);
+}
+:root[data-anim="1"] .clock .city .pin { width: 1em; height: 1em; margin-right: .2em; vertical-align: -.12em; color: inherit; }
+:root[data-anim="1"] .clock .time {
+  font-family: var(--font-mono); font-size: clamp(15px, calc(var(--fs) * 30), 26px); font-weight: 700; letter-spacing: -.03em; line-height: 1; text-align: inherit;
+  font-variant-numeric: tabular-nums lining-nums; font-feature-settings: "tnum" 1; white-space: nowrap; color: inherit;
+}
+:root[data-anim="1"] .clock .time .ampm { font-family: var(--font-read, var(--font-body)); font-size: .48em; margin-left: .12em; color: inherit; font-weight: 800; }
+:root[data-anim="1"] .clock .time .sec { display: none; }
+:root[data-anim="1"] .clock .meta, :root[data-anim="1"] .clock .date, :root[data-anim="1"] .clock .mil, :root[data-anim="1"] .clock .bar, :root[data-anim="1"] .clock .cc { display: none; }
+/* a tapped row opens up: the country line and the date show, a little larger */
+:root[data-anim="1"] .clock.expanded { scale: 1.3; z-index: 6; }
+:root[data-anim="1"] .clock.expanded .meta { display: flex; justify-content: center; font-size: clamp(12px, calc(var(--fs) * 16), 14px); color: inherit; opacity: .9; margin: 0; }
+:root[data-anim="1"] .clock.expanded:not(.local) .meta .country { display: none; }
+:root[data-anim="1"] .clock.expanded .date { display: block; font-size: clamp(12px, calc(var(--fs) * 16), 14px); color: inherit; opacity: .9; margin: 0; text-align: inherit; }
+
+/* the local time: big, no shape of its own unless the scene gives it one */
+:root[data-anim="1"] .clock.local {
+  align-items: center; text-align: center; padding: 0; background: var(--l-bg, transparent); color: var(--l-fg, var(--text)); border-radius: var(--l-r, 24px); box-shadow: var(--l-sh, none);
+  text-shadow: var(--l-ts, none); --fs: var(--k);
+}
+:root[data-anim="1"] .clock.local::before { content: ""; position: absolute; inset: -22% -10%; z-index: -1; pointer-events: none; background: var(--l-scrim, none); }
+:root[data-anim="1"] .clock.local .city { font-size: clamp(13px, calc(var(--k) * 24), 18px); align-self: center; opacity: 1; }
+:root[data-anim="1"] .clock.local .time { font-size: calc(clamp(26px, calc(var(--k) * var(--lt, 78)), 64px) * var(--tsz, 1)); text-align: center; letter-spacing: -.03em; }
+:root[data-anim="1"] .clock.local .time .sec { display: inline; font-size: .32em; margin-left: .12em; opacity: .85; font-weight: 700; }
+:root[data-anim="1"] .clock.local .date { display: block; font-size: clamp(12px, calc(var(--k) * 22), 16px); text-align: center; color: inherit; opacity: .92; margin: 1px 0 0; }
+:root[data-anim="1"] .clock.local.expanded { scale: 1.08; }
+:root[data-anim="1"] .clock.local.expanded .meta { color: inherit; }
+
+/* the brand rides above the art in the scene's own colour */
+:root[data-anim="1"] .watch .w-brand { --wordmark-time: var(--sc-brand); --wordmark-peace: var(--sc-brand); --wordmark-shadow: 0 1px 8px rgba(0, 0, 0, .35); }
+:root[data-anim="1"] .watch .disc[data-light="1"] ~ .w-brand, :root[data-anim="1"] .watch .w-brand { text-shadow: var(--wordmark-shadow); }
+:root[data-anim="1"] .watch .w-brand .mark, :root[data-anim="1"] .watch #watchMark { color: var(--sc-brand); }
+
+/* ---- the light pill, from the theme: cream paper and dark ink unless the theme brings its own ---- */
+:root[data-layout="butterflies"] .watch .disc, :root[data-layout="elephant"] .watch .disc, :root[data-layout="planes"] .watch .disc, :root[data-layout="ocean"] .watch .disc,
+:root[data-layout="blossom"] .watch .disc, :root[data-layout="balloons"] .watch .disc, :root[data-layout="cranes"] .watch .disc, :root[data-layout="kites"] .watch .disc, :root[data-layout="glasshouse"] .watch .disc {
+  --p-bg: color-mix(in srgb, var(--sc-paper) 90%, transparent); --p-fg: var(--sc-ink); --p-sh: 0 4px 14px rgba(0, 0, 0, .3); --l-fg: var(--sc-ink);
+}
+
+/* 01 Bees: the cells are drawn, the text sits in them */
+:root[data-layout="honeycomb"] .watch .disc { --p-ai: center; --p-ta: center; --p-fg: #4a2a05; --l-fg: #4a2a05; --lt: 58; }
+:root[data-layout="honeycomb"] .clock:not(.local) { padding: 0 calc(var(--k) * 6 * var(--rs, 1)); }
+:root[data-layout="honeycomb"] .clock .city { opacity: .9; }
+:root[data-layout="honeycomb"] .clock.local .city { font-size: clamp(13px, calc(var(--k) * 22), 17px); }
+
+/* 02 Butterflies: each city is the heart of a flower */
+:root[data-layout="butterflies"] .watch .disc { --p-bg: transparent; --p-sh: none; --p-ai: center; --p-ta: center; --l-bg: rgba(255, 255, 255, .7); --l-r: calc(var(--k) * 40); --l-sh: 0 6px 24px rgba(40, 80, 30, .25); }
+:root[data-layout="butterflies"] .clock:not(.local) { padding: 0 calc(var(--k) * 4 * var(--rs, 1)); }
+
+/* 03 Sun and moon: a light pill by day, a dark one by night; the time block follows the sky */
+:root[data-layout="sunmoon"] .watch .disc { --l-fg: var(--sc-lfg, #f4f1ff); --l-ts: 0 0 24px var(--sc-lglow, rgba(160, 170, 255, .6)); }
+:root[data-layout="sunmoon"] .clock[data-dn="day"]:not(.local) { --p-bg: color-mix(in srgb, var(--sc-paper) 90%, #fff4d6); --p-fg: var(--sc-ink); --p-sh: 0 4px 14px rgba(0, 0, 0, .28); }
+:root[data-layout="sunmoon"] .clock[data-dn="night"]:not(.local) { --p-bg: rgba(30, 34, 70, .85); --p-fg: #eef; --p-sh: 0 4px 14px rgba(0, 0, 0, .4); }
+:root[data-layout="sunmoon"] .clock[data-dn="day"]:not(.local) .city::before { content: "\2600\00a0"; }
+:root[data-layout="sunmoon"] .clock[data-dn="night"]:not(.local) .city::before { content: "\263E\00a0"; }
+
+/* 04 Elephants */
+:root[data-layout="elephant"] .watch .disc { --l-ts: 0 1px 10px rgba(255, 240, 210, .6); }
+
+/* 05 Fireflies: the jars are drawn, the text glows inside */
+:root[data-layout="fireflies"] .watch .disc { --p-ai: center; --p-ta: center; --p-fg: #f2ffd0; --l-fg: #f4ffd8; --l-ts: 0 0 22px rgba(210, 255, 120, .75); --l-scrim: radial-gradient(ellipse at center, rgba(0, 0, 0, .3), transparent 68%); }
+
+/* 06 Koi: the cities sit on lily pads */
+:root[data-layout="koi"] .watch .disc { --p-ai: center; --p-ta: center; --p-fg: #fffbe8; --p-ts: 0 1px 3px rgba(0, 40, 20, .6); --l-fg: #fffbe8; --l-ts: 0 0 18px rgba(0, 40, 50, .85); --l-scrim: radial-gradient(ellipse at center, rgba(0, 20, 30, .28), transparent 68%); }
+
+/* 07 Paper planes */
+:root[data-layout="planes"] .watch .disc { --p-sh: 0 0 0 1.5px color-mix(in srgb, var(--sc-accent) 55%, transparent), 0 4px 12px rgba(0, 0, 0, .22); }
+
+/* 08 Northern lights: frosted glass */
+:root[data-layout="aurora"] .watch .disc { --p-bg: rgba(20, 45, 60, .62); --p-fg: #effffa; --p-sh: 0 0 0 1.5px rgba(140, 255, 210, .45); --p-r: calc(var(--k) * 22); --l-fg: #eafff6; --l-ts: 0 0 18px rgba(0, 12, 20, .8); --l-scrim: radial-gradient(ellipse at center, rgba(0, 10, 20, .3), transparent 68%); }
+
+/* 09 Lighthouse: buoys on the swell */
+:root[data-layout="ocean"] .watch .disc { --l-fg: #fff6e8; --l-ts: 0 0 16px rgba(0, 0, 0, .7); --l-scrim: radial-gradient(ellipse at center, rgba(0, 0, 0, .28), transparent 68%); }
+
+/* 10 Blossoms */
+:root[data-layout="blossom"] .watch .disc { --p-sh: 0 0 0 1.5px color-mix(in srgb, var(--sc-accent) 40%, rgba(255, 150, 185, .6)), 0 4px 12px rgba(0, 0, 0, .15); }
+
+/* 11 Planets: a label stands beside each planet; the local time sits on the sun */
+:root[data-layout="orbit"] .watch .disc { --p-ai: center; --p-ta: center; --p-fg: #fff; --p-ts: 0 1px 6px rgba(0, 0, 0, .85); --l-fg: #3a1a00; --lt: 44; }
+:root[data-layout="orbit"] .clock.local .time .sec { display: none; }
+:root[data-layout="orbit"] .clock:not(.local) .city { opacity: .92; }
+:root[data-layout="orbit"] .clock.local .city { font-size: clamp(12px, calc(var(--k) * 20), 16px); }
+
+/* 12 Rain on the window */
+:root[data-layout="rain"] .watch .disc { --p-bg: rgba(18, 22, 38, .55); --p-fg: #fff; --p-sh: 0 0 0 1px rgba(255, 255, 255, .3); --l-fg: #fff; --l-bg: rgba(255, 255, 255, .14); --l-r: calc(var(--k) * 30); --l-sh: 0 8px 30px rgba(0, 0, 0, .4); --l-ts: 0 0 18px rgba(255, 190, 110, .55); }
+
+/* 13 Balloons: the pill is the tag under each basket */
+:root[data-layout="balloons"] .watch .disc { --p-ai: center; --p-ta: center; }
+
+/* 14 Jellyfish: the time floats in the bell */
+:root[data-layout="jelly"] .watch .disc { --p-ai: center; --p-ta: center; --p-fg: #fff; --p-ts: 0 0 10px rgba(150, 230, 255, .95), 0 1px 3px rgba(0, 20, 40, .8); --l-fg: #eaf8ff; --l-ts: 0 0 22px rgba(120, 220, 255, .75); --l-scrim: radial-gradient(ellipse at center, rgba(0, 10, 30, .3), transparent 68%); }
+
+/* 15 Campfire */
+:root[data-layout="campfire"] .watch .disc { --p-bg: rgba(60, 30, 20, .72); --p-fg: #ffe8c8; --p-sh: 0 0 0 1.5px var(--sc-glint, rgba(255, 160, 80, .4)); --l-fg: #fff1dc; --l-ts: 0 0 20px rgba(255, 140, 60, .65); --l-scrim: radial-gradient(ellipse at center, rgba(0, 0, 10, .3), transparent 68%); }
+
+/* 16 Origami cranes: folded-paper corners */
+:root[data-layout="cranes"] .watch .disc { --p-r: calc(var(--k) * 6); --p-sh: 0 0 0 1px rgba(0, 0, 0, .12), 0 4px 10px rgba(0, 0, 0, .15); }
+
+/* 17 Lava lamp */
+:root[data-layout="lava"] .watch .disc { --p-bg: rgba(60, 10, 40, .55); --p-fg: #ffeef3; --p-sh: 0 0 0 1.5px rgba(255, 180, 160, .45); --p-r: calc(var(--k) * 29); --l-fg: #fff0f4; --l-bg: rgba(60, 10, 45, .42); --l-r: calc(var(--k) * 90); --l-sh: 0 8px 30px rgba(0, 0, 0, .35); --l-ts: 0 0 18px rgba(255, 120, 140, .65); }
+:root[data-layout="lava"] .clock:not(.local) { padding: 0 calc(var(--k) * 18 * var(--rs, 1)); }
+
+/* 18 Safari: light pills in the sky, dark ones on the ground */
+:root[data-layout="safari"] .watch .disc { --p-bg: rgba(255, 240, 220, .86); --p-fg: var(--sc-ink); --p-sh: 0 0 0 1.5px rgba(255, 200, 140, .4), 0 4px 12px rgba(0, 0, 0, .3); --l-fg: #fff2dc; --l-ts: 0 0 18px rgba(120, 20, 40, .65); --l-scrim: radial-gradient(ellipse at center, rgba(40, 0, 20, .28), transparent 68%); }
+:root[data-layout="safari"] .clock[data-i="2"]:not(.local), :root[data-layout="safari"] .clock[data-i="3"]:not(.local), :root[data-layout="safari"] .clock[data-i="4"]:not(.local),
+:root[data-layout="safari"] .clock[data-i="5"]:not(.local), :root[data-layout="safari"] .clock[data-i="6"]:not(.local), :root[data-layout="safari"] .clock[data-i="7"]:not(.local),
+:root[data-layout="safari"] .clock[data-i="8"]:not(.local), :root[data-layout="safari"] .clock[data-i="9"]:not(.local), :root[data-layout="safari"] .clock[data-i="10"]:not(.local), :root[data-layout="safari"] .clock[data-i="11"]:not(.local) { --p-bg: rgba(30, 14, 18, .72); --p-fg: #ffe8c8; }
+
+/* Paper lanterns: warm ink on a dark glass tag, so the time reads on the dusk. */
+:root[data-layout="lanterns"] .watch .disc {
+  --p-bg: rgba(42, 16, 22, .82); --p-fg: #fff3df; --p-sh: 0 0 0 1.5px rgba(255, 196, 120, .65);
+  --l-fg: #fff6e8; --l-ts: 0 0 16px rgba(0, 0, 0, .55); --l-scrim: radial-gradient(ellipse at center, rgba(0, 0, 0, .28), transparent 70%);
+}
+
+/* ---- the layout picker: the animated layouts first, each with a still picture of its scene ---- */
+.layout-group { grid-column: 1 / -1; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 8px 0 -2px; }
+.layout-group:first-child { margin-top: 0; }
+.layout-tile .tile-art { width: 100%; max-width: 76px; aspect-ratio: 1; height: auto; border-radius: 50%; display: block; }
+
+/* The FADE and SIZE names sit on the art, so they follow the art, not the theme: light letters on a dark scene, dark on a light one */
+:root[data-anim="1"] .watch .disc[data-light="0"] ~ .w-arc .w-tag text { fill: #f6efe0; stroke: rgba(10, 10, 20, 0.7); stroke-width: 0.22px; }
+:root[data-anim="1"] .watch .disc[data-light="1"] ~ .w-arc .w-tag text { fill: #2a1d12; stroke: rgba(255, 250, 240, 0.8); stroke-width: 0.22px; }
+/* The meters' names lie inside the disc, so over the art they sit above it (under the art they were washed out by it) */
+:root[data-anim="1"] .watch .w-arc { z-index: 2; }
+
+/* Small disc: cities are a readable column over the art instead of microscopic scenic slots. */
+:root[data-anim="1"] .clock[data-stack="1"]:not(.local) {
+  flex-direction: row; justify-content: space-between; align-items: center; text-align: left;
+  padding: 0 10px; gap: 6px; border-radius: 999px;
+}
+:root[data-anim="1"] .clock[data-stack="1"]:not(.local) .city { max-width: 58%; align-self: center; font-size: 13px; }
+:root[data-anim="1"] .clock[data-stack="1"]:not(.local) .time { font-size: calc(15px * var(--tsz, 1)); text-align: right; }
+:root[data-anim="1"] .clock.local[data-stack="1"] { justify-content: center; }
+:root[data-layout="lanterns"] .clock.local[data-stack="1"],
+:root[data-layout="kites"] .clock.local[data-stack="1"],
+:root[data-layout="glasshouse"] .clock.local[data-stack="1"] {
+  justify-content: flex-start; padding-top: 0; gap: 0;
+}
+/* Lanterns, kites and the glasshouse grow their row type with the disc. Compact stays at the floor. */
+:root[data-layout="lanterns"] .clock[data-stack="1"]:not(.local) .city,
+:root[data-layout="kites"] .clock[data-stack="1"]:not(.local) .city,
+:root[data-layout="glasshouse"] .clock[data-stack="1"]:not(.local) .city {
+  font-size: clamp(13px, calc(var(--k) * 32), 20px); max-width: 62%;
+}
+:root[data-layout="lanterns"] .clock[data-stack="1"]:not(.local) .time,
+:root[data-layout="kites"] .clock[data-stack="1"]:not(.local) .time,
+:root[data-layout="glasshouse"] .clock[data-stack="1"]:not(.local) .time {
+  font-size: calc(clamp(15px, var(--k) * 48, 30px) * var(--tsz, 1));
+}
+
+/* Light lettering that used to sit straight on the painting gets a dark plate. Dark lettering on a light scene gets a paper plate. */
+:root[data-layout="fireflies"] .clock:not(.local),
+:root[data-layout="koi"] .clock:not(.local),
+:root[data-layout="jelly"] .clock:not(.local),
+:root[data-layout="orbit"] .clock:not(.local) {
+  background: rgba(6, 10, 18, .78); border-radius: 999px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .28);
+}
+:root[data-layout="butterflies"] .clock:not(.local) {
+  background: color-mix(in srgb, var(--sc-paper) 92%, white); color: var(--sc-ink);
+  border-radius: 999px; box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
+}
