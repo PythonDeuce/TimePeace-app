@@ -309,17 +309,8 @@ table.chart tr.now td:first-child { font-weight: 700; }
   padding: 18px 20px 12px; border-bottom: 1px solid var(--line); gap: 10px;
 }
 .panel-head h2 { margin: 0; font-size: 16px; font-weight: 800; }
-.panel-body { display: grid; grid-template-columns: 108px minmax(0, 1fr); gap: 0 14px; padding: 8px 16px 20px 12px; flex: 1; min-height: 0; overflow: hidden; }
-/* the sidebar of panes */
-.s-nav { display: flex; flex-direction: column; gap: 4px; padding: 8px 8px 0 0; border-right: 1px solid var(--line); overflow-y: auto; }
-.s-nav-btn { display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 8px; border: 0; border-radius: 10px; background: transparent; color: var(--text); font: 700 12.5px var(--font-body); text-align: left; cursor: pointer; }
-.s-search { width: 100%; font-size: 12.5px; padding: 6px 8px; margin: 0 0 6px; }
-.panel-body.searching .s-pane { display: block !important; }
-.panel-body.searching .s-nav-btn { opacity: 1; }
-.panel-body.searching .section.miss, .panel-body.searching .row.miss, .panel-body.searching .field.miss,
-.panel-body.searching .section > .miss { display: none; }   /* every kind of row the search marks: p, div, the theme and layout grids */
-.panel-body.searching .look-preview { display: none; }
-.s-nohit { font-size: 13px; color: var(--muted); padding: 12px 4px; }
+.panel-body { padding: 8px 16px 20px; flex: 1; min-height: 0; overflow-y: auto; }
+/* Settings: the home cards and pages are styled in the v1.13 Calm Cards block at the end */
 /* custom theme tiles: the base theme's tile with a ring of the custom colours */
 .theme-tile.custom .tile-ground { box-shadow: inset 0 0 0 3px var(--ct-accent, transparent); }
 .theme-tile .tile-rm { position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; border-radius: 50%; border: 0; background: var(--card); color: var(--muted); font-size: 11px; cursor: pointer; display: none; }
@@ -344,25 +335,6 @@ table.chart tr.now td:first-child { font-weight: 700; }
 .watch .disc #whatsnew .whatsnew { max-height: 22vh; }
 .whatsnew ul { margin: 6px 0 0; padding-left: 18px; }
 .whatsnew li { margin: 0 0 6px; font-size: 12.5px; line-height: 1.45; }
-.s-nav-btn svg { width: 16px; height: 16px; flex: 0 0 auto; color: var(--accent-ink, var(--accent)); }
-.s-nav-btn:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
-.s-nav-btn.on { background: var(--accent); color: var(--bg); }
-.s-nav-btn.on svg { color: var(--bg); }
-.s-nav-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-.s-panes { overflow-y: auto; min-height: 0; padding-right: 4px; }
-.s-pane[hidden] { display: none; }
-.s-pane .section:first-of-type { padding-top: 6px; }
-.section h3 { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
-.section h3::after { content: attr(data-value); font: 600 12px var(--font-body); color: var(--muted); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 55%; }
-.look-preview { display: flex; align-items: center; gap: 10px; padding: 10px 12px; margin: 8px 0 2px; border: 1px solid var(--line); border-radius: 12px; background: color-mix(in srgb, var(--card) 70%, transparent); }
-.look-preview .lp-sw { display: flex; gap: 4px; flex: 0 0 auto; }
-.look-preview .lp-sw i { width: 16px; height: 16px; border-radius: 50%; border: 1px solid var(--line); display: block; }
-.look-preview .lp-tile { width: 36px; height: 26px; flex: 0 0 auto; color: var(--accent-ink, var(--accent)); }
-.look-preview .lp-tile svg { width: 100%; height: 100%; }
-.look-preview .lp-tile canvas { height: 100%; width: auto; aspect-ratio: 1; border-radius: 50%; display: block; margin: 0 auto; }
-.look-preview b { font-size: 14px; display: block; }
-.look-preview small { display: block; font-size: 13px; color: var(--muted); }
-@media (max-width: 430px) { .panel-body { grid-template-columns: 1fr; overflow-y: auto; } .s-nav { flex-direction: row; flex-wrap: wrap; border-right: 0; border-bottom: 1px solid var(--line); padding: 0 0 6px; } .s-nav-btn { width: auto; } }
 /* Settings groups: one open at a time, each header summarizing the state inside */
 details.group { border: 1px solid var(--line); border-radius: var(--panel-radius, 14px); margin: 10px 0; background: color-mix(in srgb, var(--card) 55%, transparent); }
 details.group > summary { list-style: none; display: flex; align-items: center; gap: 10px; padding: 13px 14px; cursor: pointer; font-weight: 800; font-size: 14px; border-radius: inherit; }
@@ -915,11 +887,11 @@ input[type="range"] { width: 160px; accent-color: var(--accent); }
 .view .view-head h2{font-size:28px;line-height:1}
 .view .view-head h2::after{content:"";display:block;width:44px;height:3px;border-radius:2px;margin-top:6px;background:var(--metal)}
 .view .view-head .icon-btn,.panel-head .icon-btn{border-radius:50%!important;background:transparent!important;border:1.5px solid color-mix(in srgb,var(--ui-text) 25%,transparent)!important}
-.view .toggle,.panel .toggle{background:transparent!important;border:0!important;box-shadow:none!important;gap:2px}
-.view .toggle button,.panel .toggle button{background:transparent!important;border:0!important;border-radius:0!important;border-bottom:2.5px solid transparent!important;font-weight:800;color:var(--ui-muted)!important;padding-bottom:4px!important}
-.view .toggle button.on,.view .toggle button[aria-selected="true"],.panel .toggle button.on{color:var(--ui-text)!important;border-bottom-color:var(--brass)!important}
-.view .card,.panel .section{background:transparent!important;border:0!important;box-shadow:none!important;border-top:1px solid color-mix(in srgb,var(--ui-text) 12%,transparent)!important;border-radius:0!important;padding-left:2px!important;padding-right:2px!important}
-.view .card h3,.panel .section h3{font:800 13px var(--font-body)!important;color:var(--ui-text)!important;letter-spacing:.01em;text-transform:none}
+.view .toggle{background:transparent!important;border:0!important;box-shadow:none!important;gap:2px}
+.view .toggle button{background:transparent!important;border:0!important;border-radius:0!important;border-bottom:2.5px solid transparent!important;font-weight:800;color:var(--ui-muted)!important;padding-bottom:4px!important}
+.view .toggle button.on,.view .toggle button[aria-selected="true"]{color:var(--ui-text)!important;border-bottom-color:var(--brass)!important}
+.view .card{background:transparent!important;border:0!important;box-shadow:none!important;border-top:1px solid color-mix(in srgb,var(--ui-text) 12%,transparent)!important;border-radius:0!important;padding-left:2px!important;padding-right:2px!important}
+.view .card h3{font:800 13px var(--font-body)!important;color:var(--ui-text)!important;letter-spacing:.01em;text-transform:none}
 .view .card.hero{background:var(--ui-card)!important;border:0!important;border-radius:22px!important;box-shadow:0 0 0 1.5px var(--brass),0 10px 26px -16px rgba(0,0,0,.6)!important;padding:18px!important}
 .q-time{font-size:58px!important}.q-label{font:700 10px var(--font-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--brass-lo)}
 #quizInput{font-family:var(--font-mono);font-size:22px;text-align:center;border:0!important;border-bottom:2px solid var(--brass)!important;border-radius:0!important;background:transparent!important}
@@ -937,10 +909,6 @@ input[type="range"] { width: 160px; accent-color: var(--accent); }
 .s-cell.asleep{background:color-mix(in srgb,var(--ui-text) 6%,var(--ui-card))!important}
 .s-cell.now{box-shadow:inset 2px 0 0 var(--accent)!important}
 #planName{font-size:20px;font-weight:800;border:0!important;border-bottom:2px solid var(--brass)!important;border-radius:0!important;background:transparent!important}
-.s-nav{border-right:0;background:transparent}
-.s-nav-btn{border-radius:0!important;background:transparent!important;border-left:3px solid transparent!important}
-.s-nav-btn[aria-selected="true"]{border-left-color:var(--brass)!important;color:var(--ui-text)!important;font-weight:800}
-#settingsSearch{border:0!important;border-bottom:1.5px solid var(--brass)!important;border-radius:0!important;background:transparent!important}
 .nl-row{background:transparent!important;border:0!important;border-bottom:1px solid color-mix(in srgb,var(--ui-text) 10%,transparent)!important;border-radius:0!important}
 .nl-row .nl-btn{opacity:0;transition:opacity .2s}.nl-row:hover .nl-btn,.nl-row:focus-within .nl-btn,.nl-row .nl-btn:focus-visible{opacity:1}
 @media (hover:none){.nl-row .nl-btn{opacity:1}}
@@ -954,8 +922,6 @@ input[type="range"] { width: 160px; accent-color: var(--accent); }
 /* audit fixes */
 .plan-legend { display: inline-flex; align-items: center; gap: 5px; }
 .plan-legend i.s-cell { display: inline-block; width: 12px; height: 12px; border-radius: 3px; padding: 0; }
-.s-nav-btn[aria-selected="true"] svg { color: var(--brass, var(--accent)) !important; }
-.s-search { min-width: 0; box-sizing: border-box; }
 
 .train-row { display: flex; flex-wrap: wrap; margin: 0 0 12px; }
 .train-row #quizModes { display: contents; }
@@ -985,25 +951,6 @@ input[type="range"] { width: 160px; accent-color: var(--accent); }
 .plan-morelink { display: block; width: 100%; margin-top: 12px; padding: 12px 4px 0; border: 0; border-top: 2px dashed var(--line); background: none; text-align: left; font: 800 15px var(--font-body); color: var(--muted); cursor: pointer; }
 .plan-taphint { font-size: 14px; margin-top: 10px; }
 
-/* Settings: Essentials first. The sidebar appears with "All settings". */
-.panel-body.s-home:not(.searching) { grid-template-columns: minmax(0, 1fr); }
-.panel-body.s-home:not(.searching) .s-nav { display: none; }
-.s-homepane { padding: 4px 6px 16px; }
-.s-homepane .h-sub { margin: 0 0 14px; font-size: 16px; color: var(--muted); }
-.s-homepane .h-tag { font: 800 12.5px var(--font-body); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-ink, var(--accent)); margin: 16px 0 6px; }
-.s-homepane .h-themes { display: flex; gap: 10px; flex-wrap: wrap; }
-.s-homepane .h-sw { width: 50px; height: 50px; border-radius: 50%; border: 4px solid; cursor: pointer; padding: 0; }
-.s-homepane .h-sw.on { box-shadow: 0 0 0 3px var(--bg), 0 0 0 6px var(--accent); }
-.s-homepane .h-link { display: block; margin-top: 8px; border: 0; background: none; padding: 4px 0; font: 700 15px var(--font-body); color: var(--muted); cursor: pointer; }
-.s-homepane .h-row { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 12px; padding: 13px 4px; border: 0; border-bottom: 1px solid var(--line); background: none; font: 700 17px var(--font-body); color: var(--text); cursor: pointer; text-align: left; }
-.s-homepane .h-row[hidden], .s-homepane .h-tag[hidden] { display: none; }
-.s-homepane .h-val { font-size: 15px; font-weight: 600; color: var(--muted); text-align: right; }
-.s-homepane .h-tog { flex: 0 0 auto; width: 48px; height: 28px; border-radius: 14px; background: var(--accent); position: relative; }
-.s-homepane .h-tog::after { content: ""; position: absolute; right: 3px; top: 3px; width: 22px; height: 22px; border-radius: 50%; background: var(--card); }
-.s-homepane .h-tog.off { background: color-mix(in srgb, var(--muted) 45%, transparent); }
-.s-homepane .h-tog.off::after { right: auto; left: 3px; }
-.s-homepane .h-all { display: block; width: 100%; margin-top: 18px; padding: 14px 4px 0; border: 0; border-top: 2px dashed var(--line); background: none; text-align: left; font: 800 16px var(--font-body); color: var(--muted); cursor: pointer; }
-.s-nav-home span { font-weight: 800; }
 
 /* Theme picker: watch tiles grouped light and dark. */
 .theme-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
@@ -1074,42 +1021,8 @@ input[type="range"] { width: 160px; accent-color: var(--accent); }
 :root[data-alarm="1"] .alarm-card .al-icon { animation: tp-bell 0.5s ease-in-out infinite alternate; }
 @keyframes tp-bell { from { transform: rotate(-18deg); } to { transform: rotate(18deg); } }
 
-/* One click update */
-.upnow { margin: 4px 0 14px; }
-.upnow-btn { display: block; width: 100%; font-size: 19px; padding: 15px 18px; letter-spacing: 0.01em; }
-.upnow-btn.is-done { filter: saturate(0.7); }
-.upnow-bar { height: 8px; margin-top: 10px; border-radius: 4px; background: color-mix(in srgb, currentColor 14%, transparent); overflow: hidden; }
-.upnow-bar span { display: block; height: 100%; width: 0; background: var(--btn-bg); transition: width 0.3s ease; }
-.upnow-msg { margin: 8px 0 0; font-size: 15px; line-height: 1.4; opacity: 0.85; }
-.upnow-msg.is-error { opacity: 1; font-weight: 700; }
 
-/* ===== Settings, condensed: rare rows behind small "More" toggles; a calm About ===== */
-.panel .section { padding-top: 11px !important; padding-bottom: 11px !important; }
-.panel .row { padding: 4px 0; }
-.panel .hint { margin-top: 3px; font-size: 12px; }
-details.s-more { margin-top: 4px; }
-details.s-more > summary { cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 5px; font: 700 12px var(--font-body); color: var(--ui-muted, var(--muted)); padding: 4px 0; border-radius: 6px; }
-details.s-more > summary::-webkit-details-marker { display: none; }
-details.s-more > summary::before { content: "\203a"; display: inline-block; transition: transform 0.15s ease; font-size: 14px; line-height: 1; }
-details.s-more[open] > summary::before { transform: rotate(90deg); }
-details.s-more > summary:hover { color: var(--ui-text, var(--text)); }
-details.s-more > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-details.s-more[open] { padding-bottom: 2px; }
-.about-head { display: flex; align-items: center; gap: 12px; margin: 6px 0 12px; }
-.about-logo { width: 44px; height: 44px; border-radius: 12px; flex: 0 0 auto; }
-.about-name { display: block; font: 800 16px var(--font-body); color: var(--ui-text, var(--text)); }
-.about-ver { display: block; font-size: 12.5px; color: var(--ui-muted, var(--muted)); margin-top: 1px; }
-.about-by { margin: 2px 0 4px; font-size: 12.5px; color: var(--ui-muted, var(--muted)); }
-.about-links { display: flex; gap: 14px; margin-bottom: 4px; }
-/* An update is out: a soft glow in the theme's accent on the About tab, the About card's button and the way there */
-@keyframes tp-glow { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent); } 50% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent), 0 0 14px 2px color-mix(in srgb, var(--accent) 45%, transparent); } }
-.tp-update .s-nav-btn[data-pane="about"], .tp-update #aboutSection .upnow-btn, .tp-update #upnowHome .upnow-btn, .tp-update .h-all { animation: tp-glow 2.4s ease-in-out infinite; border-radius: 10px; }
-.tp-update .s-nav-btn[data-pane="about"]::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-left: auto; }
-@media (prefers-reduced-motion: reduce) { .tp-update .s-nav-btn[data-pane="about"], .tp-update #aboutSection .upnow-btn, .tp-update #upnowHome .upnow-btn, .tp-update .h-all { animation: none; box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 45%, transparent); } }
-:root[data-motion="reduced"].tp-update .s-nav-btn[data-pane="about"], :root[data-motion="reduced"].tp-update #aboutSection .upnow-btn, :root[data-motion="reduced"].tp-update .h-all { animation: none; }
-#aboutSection > h3 { display: none; } /* the logo block names it; the version shows once */
-
-/* ===== v1.11 Side Rail Settings + Soft Rounded Card tool windows (not sticky notes) ===== */
+/* ===== v1.11 Soft Rounded Card tool windows (not sticky notes) ===== */
 /* Solid, theme-matched ground edge to edge: Windows 11 rounds the window itself, so nothing see through shows at the corners. */
 :root[data-tool], :root[data-tool] body { background: var(--ui-card, var(--card)) !important; }
 :root[data-tool] .panel { border-radius: 0; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ui-text, var(--text)) 14%, transparent); background: var(--ui-card, var(--card)); }
@@ -1117,21 +1030,157 @@ details.s-more[open] { padding-bottom: 2px; }
 :root[data-tool] .panel-head h2 { font: 400 20px var(--font-display); color: var(--accent-ink, var(--accent)); }
 :root[data-tool] .panel-head .icon-btn { width: 26px; height: 26px; border-radius: 50%; border: 0; background: color-mix(in srgb, var(--ui-text, var(--text)) 9%, transparent); }
 :root[data-tool] .panel-head .icon-btn svg { width: 12px; height: 12px; }
-/* Side Rail: categories stay on the left at every window size, bigger text, one short list at the right. */
-:root[data-tool] .panel-body.s-rail { grid-template-columns: 118px minmax(0, 1fr) !important; gap: 0 12px; padding: 4px 12px 12px 0; overflow: hidden; }
-:root[data-tool] .panel-body.s-rail .s-nav { display: flex !important; flex-direction: column; flex-wrap: nowrap; padding: 4px 0 0; border: 0; background: color-mix(in srgb, var(--ui-text, var(--text)) 4%, transparent); border-radius: 0 14px 14px 0; }
-:root[data-tool] .panel-body.s-rail .s-nav-btn { width: 100%; font-size: 14.5px; padding: 10px 10px 10px 12px; }
-:root[data-tool] .panel-body.s-rail .s-nav-btn[aria-selected="true"] { border-left-color: var(--accent) !important; color: var(--accent-ink, var(--accent)) !important; background: var(--ui-card, var(--card)) !important; }
-:root[data-tool] .panel-body.s-rail .s-search { margin: 0 8px 6px 10px; width: auto; font-size: 13.5px; }
-.panel-body.s-rail .s-nav-home, .panel-body.s-rail #pane-home { display: none !important; }
-:root[data-tool] .panel-body.s-rail .row { font-size: 14.5px; padding: 8px 0; }
-:root[data-tool] .panel-body.s-rail .section h3 { font-size: 16px; }
-.s-upbar { margin: 0 14px 8px; }
-.s-upbar[hidden] { display: none; }
 /* The alarm pop-up: the same soft card (the ringing shake and foreground stay as they were). */
 .alarm-card { border-radius: 18px !important; box-shadow: 0 0 0 1px color-mix(in srgb, var(--ui-text, var(--text)) 14%, transparent), 0 4px 10px -2px rgba(0,0,0,.18), 0 18px 40px -14px rgba(0,0,0,.4) !important; }
-:root[data-tool] .s-upbar { margin: 0 14px 6px; }
-:root[data-tool] .s-upbar .upnow-btn { padding: 8px 14px !important; font-size: 15px !important; min-height: 0 !important; }
-:root[data-tool] .s-upbar .upnow-msg { font-size: 12px; margin-top: 3px; line-height: 1.3; }
-:root[data-tool] .panel-body.s-rail .s-nav { overflow-y: auto; }
-:root[data-tool] .panel-body.s-rail .s-nav-btn { padding: 8px 10px 8px 12px; }
+
+/* ===== v1.13 Calm Cards Settings (the Settings panel and window only; not sticky notes, not the clock) =====
+   Six cards on the home page, each opening one full-width page of grouped rows. Every colour comes
+   from the active theme through the --ui-* names; the few mixes below only steady the contrast of
+   small text and hairlines so all fifteen themes read the same way. */
+:root { --tp-accent-raw: var(--accent); }   /* the theme's own accent, read before the panel renames --accent to its ink */
+#panel {
+  --s-ground: var(--ui-bg); --s-card: var(--ui-card); --s-text: var(--ui-text); --s-accent: var(--ui-accent);
+  --s-muted: color-mix(in srgb, var(--ui-text) 88%, var(--ui-card));
+  --s-line: color-mix(in srgb, var(--ui-text) 20%, var(--ui-card));
+  --s-hair: color-mix(in srgb, var(--ui-text) 11%, var(--ui-card));
+  --s-soft: color-mix(in srgb, var(--ui-text) 7%, var(--ui-card));
+  --s-tint: color-mix(in srgb, var(--tp-accent-raw, var(--ui-accent)) 20%, var(--ui-card));
+  --s-on: var(--on-ui-accent, #ffffff);
+  --muted: var(--s-muted); --line: var(--s-line); --soft: var(--s-soft);
+  background: var(--s-ground); color: var(--s-text); font-family: var(--font-body);
+}
+:root[data-hc="1"] #panel { --s-muted: var(--ui-text); --s-line: var(--ui-text); --s-hair: color-mix(in srgb, var(--ui-text) 55%, var(--ui-card)); }
+:root[data-tool="settings"], :root[data-tool="settings"] body { background: var(--ui-bg, var(--bg)) !important; }
+:root[data-tool] #panel { background: var(--s-ground) !important; }
+
+/* Header: mark, wordmark, "Settings", close */
+#panel .panel-head { display: flex; align-items: center; justify-content: flex-start; gap: 8px; min-height: 42px; padding: 7px 12px 5px 14px; border-bottom: 0; flex: 0 0 auto; }
+#panel .s-brand { display: inline-flex; align-items: center; gap: 7px; min-width: 0; }
+#panel .s-mark { width: 18px; height: 18px; flex: 0 0 auto; color: var(--s-accent); }
+#panel .s-brand .wordmark { font-size: 19px; transform: none; }
+#panel #panelTitle { margin: 3px auto 0 2px; font: 700 13px var(--font-body); letter-spacing: 0; text-transform: none; color: var(--s-muted); }
+#panel .panel-head .icon-btn { width: 28px; height: 28px; flex: 0 0 auto; border-radius: 50% !important; border: 1px solid var(--s-line) !important; background: var(--s-card) !important; color: var(--s-text); }
+#panel .panel-head .icon-btn svg { width: 12px; height: 12px; }
+
+/* The update bar, always above the page, and the same box under App & backups */
+#panel .upnow { display: flex; align-items: center; gap: 10px; margin: 0; }
+#panel .upnow[hidden] { display: none; }
+#panel .s-upbar { flex: 0 0 auto; margin: 1px 12px 0; min-height: 54px; padding: 7px 8px 7px 12px; border-radius: 14px; background: var(--s-tint); border: 1px solid color-mix(in srgb, var(--tp-accent-raw, var(--ui-accent)) 34%, var(--ui-card)); }
+#panel .s-uprow { padding: 10px 0; }
+#panel .upnow-text { flex: 1 1 auto; min-width: 0; }
+#panel .upnow-title { display: block; font: 800 14px/1.25 var(--font-body); color: var(--s-text); }
+#panel .upnow-msg { margin: 1px 0 0; font-size: 12px; line-height: 1.3; color: var(--s-text); opacity: 1; }
+#panel .upnow-msg.is-error { color: var(--s-text); font-weight: 700; }
+#panel .upnow-bar { height: 5px; margin-top: 5px; border-radius: 3px; background: color-mix(in srgb, var(--ui-text) 16%, transparent); overflow: hidden; }
+#panel .upnow-bar[hidden] { display: none; }
+#panel .upnow-bar span { display: block; height: 100%; width: 0; border-radius: 3px; background: var(--ui-accent); transition: width 0.3s ease; }
+#panel .upnow-btn { flex: 0 0 auto; display: inline-block; width: auto; white-space: nowrap; }
+#panel .upnow-btn:disabled { opacity: 0.62; cursor: default; }
+#panel .upnow-page, #panel #updateLine .reset { margin-left: 4px; font-size: 12px; font-weight: 700; color: var(--s-accent); }
+#panel #updateLine .linkbtn { margin: 4px 0 0; }
+
+/* Buttons and inputs */
+#panel .btn-primary { border-radius: 11px; padding: 8px 14px; font: 800 14px var(--font-body); letter-spacing: 0; background: var(--ui-accent) !important; color: var(--s-on) !important; box-shadow: none !important; }
+#panel .linkbtn { background: var(--s-card); border: 1px solid var(--s-line); color: var(--s-text); border-radius: 10px; padding: 6px 11px; font: 700 13px var(--font-body); cursor: pointer; }
+#panel .linkbtn:hover { background: var(--s-soft); border-color: var(--s-accent); }
+#panel .linkbtn.danger { color: color-mix(in srgb, var(--ui-danger) 18%, var(--ui-text)); border-color: var(--ui-danger); }
+#panel .linkbtn:disabled { opacity: 0.6; cursor: default; }
+#panel .reset { font-size: 12.5px; color: var(--s-muted); }
+#panel .text-input, #panel select.text-input, #panel .search input, #panel .hex { border-radius: 10px; border: 1px solid var(--s-line); background: var(--s-soft); color: var(--s-text); }
+#panel .text-input, #panel select.text-input { font: 600 13px var(--font-body); padding: 7px 10px; }
+#panel .search input { font: 600 14px var(--font-body); padding: 9px 12px; }
+#panel .search input::placeholder { color: var(--s-muted); opacity: 1; }
+#panel input[type="range"] { width: 124px; accent-color: var(--ui-accent); }
+#panel .val { font-size: 12px; color: var(--s-muted); }
+
+/* Home: six cards */
+#panel .panel-body { display: block; padding: 8px 12px 14px; flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto; }
+#panel .s-page[hidden] { display: none; }
+#panel .s-home { display: flex; flex-direction: column; min-height: 100%; }
+#panel .s-prompt { margin: 1px 4px 8px; font: 600 14px/1.3 var(--font-body); color: var(--s-muted); }
+#panel .s-cards { flex: 1 1 auto; max-height: 420px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(104px, 1fr); gap: 8px; }
+#panel .s-card { display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 2px; min-width: 0; padding: 12px 12px 10px; text-align: left; border-radius: 16px; background: var(--s-card); border: 1px solid var(--s-line); color: var(--s-text); font-family: var(--font-body); cursor: pointer; transition: border-color 0.15s ease, transform 0.15s ease; }
+#panel .s-card svg { width: 24px; height: 24px; flex: 0 0 auto; margin-bottom: 9px; color: var(--s-accent); }
+#panel .s-card b { font: 800 15px/1.25 var(--font-body); }
+#panel .s-card small { font: 400 12px/1.35 var(--font-body); color: var(--s-muted); }
+#panel .s-card:hover { border-color: var(--s-accent); }
+#panel .s-card:active { transform: translateY(1px); }
+#panel .s-card:focus-visible, #panel .s-back:focus-visible { outline: 2px solid var(--s-accent); outline-offset: 2px; }
+
+/* A page: Back, title, then groups of rows on cards */
+/* Back and the page's name stay put while the page scrolls under them */
+#panel .s-vhead { display: flex; align-items: center; gap: 10px; position: sticky; top: -8px; z-index: 3; margin: -8px -12px 2px; padding: 8px 12px 6px; background: var(--s-ground); }
+#panel .panel-body:not([data-page="home"]) { scroll-padding-top: 52px; }
+#panel .s-back { flex: 0 0 auto; font: 800 13px var(--font-body); color: var(--s-accent); background: var(--s-card); border: 1px solid var(--s-line); border-radius: 10px; padding: 5px 10px 5px 8px; cursor: pointer; white-space: nowrap; }
+#panel .s-back:hover { border-color: var(--s-accent); }
+#panel .s-title { margin: 0; min-width: 0; font: 800 17px/1.2 var(--font-body); letter-spacing: 0; color: var(--s-text); }
+#panel .section { padding: 0; margin: 0; border: 0; background: transparent; }
+#panel .section.s-empty, #panel .section[hidden] { display: none; }
+#panel .section > h3 { display: block; margin: 12px 4px 6px; font: 800 12px/1.3 var(--font-body); letter-spacing: 0.07em; text-transform: uppercase; color: var(--s-accent); }
+#panel .s-group { background: var(--s-card); border: 1px solid var(--s-line); border-radius: 14px; padding: 0 12px; }
+#panel .row { min-height: 44px; padding: 9px 0; gap: 6px 12px; font-size: 14px; }
+#panel .row[hidden] { display: none; }
+#panel .s-group > :not([hidden]) ~ .row, #panel .s-group > :not([hidden]) ~ .field, #panel .s-group > :not([hidden]) ~ .upnow { border-top: 1px solid var(--s-hair); }
+#panel .row > label { flex: 1 1 96px; min-width: 0; font-weight: 700; color: var(--s-text); }
+#panel .row > label small { display: block; margin-top: 1px; font: 400 12px/1.35 var(--font-body); color: var(--s-muted); }
+#panel .row > label .hint { font-size: 12px; font-weight: 400; color: var(--s-muted); }
+#panel .row > :not(label):last-child { margin-left: auto; }
+#panel .row .ctl { gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+#panel .row.s-stack { flex-direction: column; align-items: stretch; flex-wrap: nowrap; gap: 8px; }
+#panel .row.s-stack > label { flex: 0 0 auto; }
+#panel .row.s-stack > :not(label):last-child { margin-left: 0; }
+#panel .hint { margin: 0 0 9px; font-size: 12px; line-height: 1.4; color: var(--s-muted); }
+#panel .s-group > .hint:first-child { margin-top: 10px; }
+#panel .s-group > .row + .hint { margin-top: -4px; }
+#panel .hint code { font-size: 12px; }
+#panel .note { margin: 0 0 10px; font-size: 12px; color: var(--s-text); background: var(--s-soft); border-radius: 10px; }
+#panel .s-seealso { margin: 8px 4px 0; font-size: 12px; line-height: 1.5; color: var(--s-muted); }
+#panel .s-link { padding: 0; border: 0; background: none; font: 700 12px var(--font-body); color: var(--s-accent); text-decoration: underline; cursor: pointer; }
+#panel .theme-grid, #panel .layout-grid { padding: 10px 0; }
+#panel .row.s-stack .layout-grid { padding: 0 0 2px; }
+#panel .field { padding: 10px 0 12px; gap: 8px; }
+#panel .field .label-row { font-size: 14px; font-weight: 700; }
+#panel #customThemeName { width: 120px; }
+
+/* Choices: a segmented control; plain on or off: a switch that says which it is */
+#panel .toggle { display: inline-flex; flex-wrap: wrap; max-width: 100%; gap: 2px; padding: 2px; border: 1px solid var(--s-line); border-radius: 11px; background: var(--s-soft); overflow: visible; }
+#panel .toggle button { padding: 6px 10px; border: 0; border-radius: 8px; background: transparent; color: var(--s-text); font: 700 13px var(--font-body); white-space: nowrap; cursor: pointer; }
+#panel .toggle button.on { background: var(--ui-accent); color: var(--s-on); }
+#panel .toggle.sw { position: relative; align-items: center; min-height: 24px; padding: 0 50px 0 0; border: 0; background: transparent; }
+#panel .toggle.sw button { padding: 0; background: transparent; color: var(--s-muted); font: 700 12px var(--font-body); }
+#panel .toggle.sw button.on { background: transparent; color: var(--s-muted); pointer-events: none; }
+#panel .toggle.sw button:not(.on) { position: absolute; inset: -8px -2px; opacity: 0; }   /* the whole switch presses the other choice */
+#panel .toggle.sw::before { content: ""; position: absolute; right: 0; top: 50%; width: 42px; height: 24px; margin-top: -12px; border-radius: 12px; background: color-mix(in srgb, var(--ui-text) 38%, var(--ui-card)); transition: background 0.15s ease; }
+#panel .toggle.sw::after { content: ""; position: absolute; right: 21px; top: 50%; width: 18px; height: 18px; margin-top: -9px; border-radius: 50%; background: var(--ui-card); transition: right 0.15s ease; pointer-events: none; }
+#panel .toggle.sw:has(button[data-v="1"].on)::before { background: var(--ui-accent); }
+#panel .toggle.sw:has(button[data-v="1"].on)::after { right: 3px; background: var(--s-on); }
+#panel .toggle.sw:has(button:focus-visible)::before { outline: 2px solid var(--s-accent); outline-offset: 2px; }
+#panel .toggle.sw button:focus-visible { outline: none; }
+
+/* Cities, shortcuts, about */
+#panel .zlist { margin: 0; gap: 0; }
+#panel .zitem { padding: 7px 0; border-radius: 0; background: transparent; border-top: 1px dashed var(--s-line); font-size: 14px; font-weight: 700; }
+#panel .zitem .zname small { font: 400 12px var(--font-body); color: var(--s-muted); }
+#panel .zitem button { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--s-line); background: var(--s-card); color: var(--s-text); }
+#panel .zitem button:hover { border-color: var(--s-accent); }
+#panel .results { border-color: var(--s-line); border-radius: 10px; }
+#panel .hk { gap: 6px; }
+#panel .keycap { font-size: 12px; padding: 5px 10px; border-radius: 8px; border: 1px solid var(--s-line); background: var(--s-soft); color: var(--s-text); }
+#panel .keycap.capturing { border-color: var(--s-accent); color: var(--s-accent); }
+#panel .hk-clear { padding: 5px 9px; font-size: 12px; }
+#panel .about-head { display: flex; align-items: center; gap: 12px; margin: 0; padding: 12px 0; }
+#panel .about-logo { width: 44px; height: 44px; border-radius: 12px; flex: 0 0 auto; }
+#panel .about-name { display: block; font: 800 16px var(--font-body); color: var(--s-text); }
+#panel .about-ver, #panel .about-by { display: block; margin: 1px 0 0; font-size: 12px; color: var(--s-muted); }
+#panel #folderPath { font-size: 12px; }
+
+/* Moving between the cards and a page: a short fade and a 6px rise, and none at all when motion is reduced */
+@keyframes s-page-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+#panel .s-page.s-in { animation: s-page-in 0.18s ease-out both; }
+@media (prefers-reduced-motion: reduce) { #panel .s-page.s-in { animation: none; } #panel .s-card, #panel .toggle.sw::before, #panel .toggle.sw::after { transition: none; } }
+:root[data-motion="reduced"] #panel .s-page.s-in { animation: none; }
+/* An update is out: the Update now button glows softly in the theme's accent */
+@keyframes tp-glow { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent); } 50% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent), 0 0 14px 2px color-mix(in srgb, var(--accent) 45%, transparent); } }
+.tp-update #upnowHome .upnow-btn:not(:disabled), .tp-update #upnowAbout .upnow-btn:not(:disabled) { animation: tp-glow 2.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .tp-update #upnowHome .upnow-btn, .tp-update #upnowAbout .upnow-btn { animation: none; } }
+:root[data-motion="reduced"].tp-update #upnowHome .upnow-btn, :root[data-motion="reduced"].tp-update #upnowAbout .upnow-btn { animation: none; }
